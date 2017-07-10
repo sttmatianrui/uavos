@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/AMap2DMap_5.2.0_AMapSearch_5.2.1_20170630/AMap2DMap_5.2.0_AMapSearch_5.2.1_20170630.iml" filepath="$PROJECT_DIR$/AMap2DMap_5.2.0_AMapSearch_5.2.1_20170630/AMap2DMap_5.2.0_AMapSearch_5.2.1_20170630.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dJISDKLIB/dJISDKLIB.iml" filepath="$PROJECT_DIR$/dJISDKLIB/dJISDKLIB.iml" />
       <module fileurl="file://$PROJECT_DIR$/uavos.iml" filepath="$PROJECT_DIR$/uavos.iml" />
     </modules>
   </component>
