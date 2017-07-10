@@ -29,6 +29,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+        <uses-library android:name="com.android.future.usb.accessory" />
+
+        <meta-data
+            android:name="com.dji.sdk.API_KEY"
+            android:value="1560c00dac18b6de667e697f" />
+        <!--DJISDK Key:1560c00dac18b6de667e697f-->
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="2058180fe0093c521b4412a496a981f2" />
