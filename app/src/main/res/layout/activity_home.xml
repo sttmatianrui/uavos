@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/home_background"
+    android:orientation="vertical">
+
+    <!-- Widget to see first person view (FPV) -->
+    <dji.ui.widget.FPVWidget
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!-- Widgets in top status bar -->
+    <LinearLayout
+        android:id="@+id/signal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:gravity="end|center_vertical"
+        android:background="@color/transparent"
+        android:paddingLeft="@dimen/activity_margin_10">
+
+        <dji.ui.widget.PreFlightStatusWidget
+            android:paddingLeft="@dimen/activity_margin_10"
+            android:layout_width="238dp"
+            android:layout_height="22dp" />
+
+        <dji.ui.widget.FlightModeWidget
+            android:layout_width="103dp"
+            android:layout_height="22dp"
+            android:layout_marginLeft="340dp" />
+
+        <dji.ui.widget.GPSSignalWidget
+            android:layout_width="44dp"
+            android:layout_height="22dp" />
+
+        <!--<dji.ui.widget.VisionWidget
+            android:layout_width="22dp"
+            android:layout_height="match_parent" />-->
+
+        <dji.ui.widget.RemoteControlSignalWidget
+            android:layout_width="38dp"
+            android:layout_height="22dp" />
+
+        <dji.ui.widget.VideoSignalWidget
+            android:layout_width="38dp"
+            android:layout_height="22dp" />
+
+        <!--<dji.ui.widget.WiFiSignalWidget
+            android:layout_width="22dp"
+            android:layout_height="match_parent"/>-->
+
+        <dji.ui.widget.BatteryWidget
+            android:layout_width="70dp"
+            android:layout_height="match_parent"
+            custom:excludeView="singleVoltage"
+            android:layout_marginRight="@dimen/activity_margin_10"/>
+
+        <!--<dji.ui.widget.ConnectionWidget
+            android:layout_width="22dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp" />-->
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="651dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/ll_title"
+        android:layout_marginRight="@dimen/activity_margin_2"
+        android:layout_marginTop="-6dp"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="9">
+
+            <FrameLayout
+                android:id="@+id/fragment_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </FrameLayout>
+
+            <dji.ui.widget.dashboard.DashboardWidget
+                android:id="@+id/Compass"
+                android:layout_width="405dp"
+                android:layout_height="91dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginBottom="@dimen/activity_margin_8"
+                android:layout_marginLeft="@dimen/activity_margin_8"
+                android:layout_marginRight="12dp"
+                tools:ignore="RtlHardcoded" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/activity_margin_2">
+
+            <LinearLayout
+                android:id="@+id/ll_amap"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/activity_margin_2"
+                android:layout_weight="1"
+                android:background="@drawable/selector_home_fg"
+                android:clickable="true"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="@dimen/activity_margin_15"
+                    android:layout_height="@dimen/activity_margin_15"
+                    android:layout_marginRight="@dimen/activity_margin_10"
+                    android:src="@drawable/selector_home_map" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/home_btn_map"
+                    android:textColor="@drawable/selector_home_text"
+                    android:textSize="@dimen/text_size_12" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_video"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/activity_margin_2"
+                android:layout_weight="1"
+                android:background="@drawable/selector_home_fg"
+                android:clickable="true"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="@dimen/activity_margin_15"
+                    android:layout_height="@dimen/activity_margin_15"
+                    android:layout_marginRight="@dimen/activity_margin_10"
+                    android:src="@drawable/selector_home_video" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/home_btn_video"
+                    android:textColor="@drawable/selector_home_text"
+                    android:textSize="@dimen/text_size_12" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_data"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/selector_home_fg"
+                android:clickable="true"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="@dimen/activity_margin_15"
+                    android:layout_height="@dimen/activity_margin_15"
+                    android:layout_marginRight="@dimen/activity_margin_10"
+                    android:src="@drawable/selector_home_data" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/home_btn_data"
+                    android:textColor="@drawable/selector_home_text"
+                    android:textSize="@dimen/text_size_12" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_home_right_content"
+        android:layout_width="200dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/ll_title"
+        android:layout_marginTop="-6dp">
+
+        <include
+            android:id="@+id/layout_task_create"
+            layout="@layout/layout_task_create"
+            android:visibility="visible" />
+
+        <include
+            android:id="@+id/layout_task_create_pattern"
+            layout="@layout/layout_task_create_pattern"
+            android:visibility="invisible" />
+
+        <include
+            android:id="@+id/layout_pattern_vertical"
+            layout="@layout/layout_pattern_vertical"
+            android:visibility="invisible" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+        <ImageView
+            android:layout_width="270dp"
+            android:layout_height="@dimen/activity_margin_50"
+            android:layout_marginLeft="20dp"
+            android:background="@mipmap/uavos_title" />
+    </LinearLayout>
+    <!--<dji.ui.widget.FPVOverlayWidget
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true" />-->
+
+</RelativeLayout>
