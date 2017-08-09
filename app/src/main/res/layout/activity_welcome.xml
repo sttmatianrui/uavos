@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_welcome"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/welcome_background"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.stt.uavos.ui.WelcomeActivity">
+
+    <Button
+        android:id="@+id/welcome_entry"
+        android:layout_width="80dp"
+        android:layout_height="@dimen/activity_margin_20"
+        android:layout_centerInParent="true"
+        android:background="@drawable/selector_welcome_btn_more"
+        android:text="@string/welcome_btn_entry"
+        android:textSize="@dimen/text_size_10"
+        android:textColor="@color/colorWhite" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/activity_margin"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/activity_margin"
+            android:textSize="@dimen/text_size_8"
+            android:text="@string/welcome_text_about_company"
+            android:textColor="#6BD6D4" />
+
+        <Button
+            android:id="@+id/welcome_more"
+            android:layout_width="60dp"
+            android:layout_height="@dimen/activity_margin_20"
+            android:background="@drawable/selector_welcome_btn_more"
+            android:text="@string/welcome_btn_more"
+            android:textSize="@dimen/text_size_8"
+            android:textColor="@color/colorWhite" />
+    </LinearLayout>
+
+</RelativeLayout>
