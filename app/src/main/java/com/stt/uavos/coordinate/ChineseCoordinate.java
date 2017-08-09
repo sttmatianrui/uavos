@@ -9,6 +9,7 @@ import java.util.HashMap;
  * Created by matianrui on 2017/7/10.
  * 中国大陆区域坐标转换类 提供WGS84与GCJ02坐标转换
  * 该类下提供两个静态函数 getGCJ02Location() getWGS84Location()
+ *  坐标检查  checkGpsCoordination()
  *  注意：地图中使用GCJ02坐标系 无人机使用WGS84坐标系
  */
 
@@ -97,4 +98,8 @@ public class ChineseCoordinate {
 
         return hm;
     }
+    public static boolean checkGpsCoordination(double latitude, double longitude) {
+        return (latitude > -90 && latitude < 90 && longitude > -180 && longitude < 180) && (latitude != 0f && longitude != 0f);
+    }
+
 }
