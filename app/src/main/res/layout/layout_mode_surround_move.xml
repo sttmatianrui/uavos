@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/home_right"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:padding="@dimen/activity_margin_6">
+    <!-- 定点环绕移动模式(简写)：sm -->
+    <Button
+        android:id="@+id/btn_sm_back"
+        android:layout_width="@dimen/btn_min_width"
+        android:layout_height="@dimen/activity_margin_30"
+        android:background="@drawable/selector_btn_bg"
+        android:text="@string/go_back"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/text_size_10" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/btn_sm_back"
+        android:layout_marginTop="@dimen/activity_margin_15"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/activity_margin_6"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/uav_parameter_lng"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_10" />
+
+            <EditText
+                android:id="@+id/et_sm_lat"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/activity_margin_30"
+                android:layout_marginRight="@dimen/activity_margin_6"
+                android:layout_weight="2"
+                android:background="@drawable/selector_edittext_bg"
+                android:lines="1"
+                android:paddingLeft="@dimen/activity_margin_6"
+                android:paddingRight="@dimen/activity_margin_6"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_10" />
+
+            <Button
+                android:id="@+id/btn_sm_set_point"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/activity_margin_30"
+                android:layout_weight="2"
+                android:background="@drawable/selector_btn_bg"
+                android:text="@string/uav_parameter_set_base_point"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_10" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="@dimen/activity_margin_8"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/activity_margin_6"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/uav_parameter_lat"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_10" />
+
+            <EditText
+                android:id="@+id/et_sm_lng"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/activity_margin_30"
+                android:layout_marginRight="@dimen/activity_margin_6"
+                android:layout_weight="2"
+                android:background="@drawable/selector_edittext_bg"
+                android:lines="1"
+                android:paddingLeft="@dimen/activity_margin_6"
+                android:paddingRight="@dimen/activity_margin_6"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_10" />
+
+            <Button
+                android:id="@+id/btn_sm_cancel"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/activity_margin_30"
+                android:layout_weight="2"
+                android:background="@drawable/selector_btn_bg"
+                android:text="@string/cancel"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_10" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_margin_8">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/btn_sm_get_plane"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/activity_margin_30"
+                android:layout_weight="4"
+                android:background="@drawable/selector_btn_bg"
+                android:text="@string/uav_get_position"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_10" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_margin_10">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/activity_margin_6"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/uav_parameter_speed_height"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_10" />
+
+            <EditText
+                android:id="@+id/et_sm_speed_height"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/activity_margin_30"
+                android:layout_weight="2"
+                android:background="@drawable/selector_edittext_bg"
+                android:lines="1"
+                android:paddingLeft="@dimen/activity_margin_6"
+                android:paddingRight="@dimen/activity_margin_6"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_10" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_margin_10">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/activity_margin_6"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/uav_parameter_surround_radius"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_10" />
+
+            <EditText
+                android:id="@+id/et_sm_surround_radius"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/activity_margin_30"
+                android:layout_weight="2"
+                android:background="@drawable/selector_edittext_bg"
+                android:lines="1"
+                android:paddingLeft="@dimen/activity_margin_6"
+                android:paddingRight="@dimen/activity_margin_6"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_10" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_margin_10">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/activity_margin_6"
+                android:layout_weight="1"
+                android:text="@string/uav_parameter_monitor_speed"
+                android:textColor="@color/colorWhite"
+                android:gravity="center"
+                android:textSize="@dimen/text_size_10" />
+
+            <EditText
+                android:id="@+id/btn_sm_monitor_speed"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/activity_margin_30"
+                android:layout_weight="2"
+                android:background="@drawable/selector_edittext_bg"
+                android:lines="1"
+                android:paddingLeft="@dimen/activity_margin_6"
+                android:paddingRight="@dimen/activity_margin_6"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_10" />
+        </LinearLayout>
+
+        <!--<LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_margin_10">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/activity_margin_6"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/uav_parameter_single_monitor_time"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_10" />
+
+            <EditText
+                android:id="@+id/et_single_monitor_time"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/activity_margin_30"
+                android:layout_weight="2"
+                android:background="@drawable/selector_edittext_bg"
+                android:lines="1"
+                android:paddingLeft="@dimen/activity_margin_6"
+                android:paddingRight="@dimen/activity_margin_6"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_10" />
+        </LinearLayout>-->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_margin_15"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/btn_sm_generate_route"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/activity_margin_30"
+                android:layout_marginRight="@dimen/activity_margin_6"
+                android:background="@drawable/selector_btn_bg"
+                android:text="@string/uav_parameter_generate_route"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_10" />
+
+            <!--<Button
+                android:layout_width="0dp"
+                android:layout_height="@dimen/activity_margin_30"
+                android:layout_weight="1"
+                android:background="@drawable/selector_btn_bg"
+                android:text="@string/uav_take_off"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_10" />-->
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

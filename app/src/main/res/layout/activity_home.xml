@@ -195,13 +195,13 @@
             android:visibility="visible" />
 
         <include
-            android:id="@+id/layout_task_create_pattern"
-            layout="@layout/layout_task_create_pattern"
+            android:id="@+id/layout_task_mode_select"
+            layout="@layout/layout_task_mode_select"
             android:visibility="invisible" />
 
         <include
-            android:id="@+id/layout_pattern_vertical"
-            layout="@layout/layout_pattern_vertical"
+            android:id="@+id/layout_mode_vertical_hover"
+            layout="@layout/layout_mode_vertical_hover"
             android:visibility="invisible" />
 
     </RelativeLayout>

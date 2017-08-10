@@ -6,15 +6,27 @@
 
     <com.amap.api.maps2d.MapView
         android:id="@+id/map"
-        android:padding="1dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:padding="1dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@mipmap/home_left">
+        android:background="@mipmap/home_left"
+        android:gravity="center_horizontal">
 
+        <TextView
+            android:id="@+id/tv_display_data"
+            android:layout_width="@dimen/activity_margin_100"
+            android:layout_height="@dimen/activity_margin_40"
+            android:layout_marginTop="@dimen/activity_margin_40"
+            android:background="@mipmap/home_display_data_bg"
+            android:gravity="center"
+            android:hint="实时数据"
+            android:textColor="@color/home_fg_click"
+            android:textColorHint="@color/home_fg_click"
+            android:textSize="@dimen/text_size_12" />
     </LinearLayout>
 
 </RelativeLayout>

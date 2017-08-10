@@ -62,25 +62,25 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private WaypointMissionOperator instance;
     public double droneLocationLat = 181, droneLocationLng = 181;
 
-    /** 新建任务 */
+    /** 新建任务页 */
     private LinearLayout mTaskCreateLayout;
-    /** 新建任务按钮 */
-    private Button mCreateTaskBtn;
-    /** 任务名称输入框 */
-    private EditText mNewTaskNameET;
-    /** 模式选择 */
-    private RelativeLayout mTaskPatternLayout;
-    /** 模式选择页返回按钮 */
-    private Button mPatternBackBtn;
-    /** 垂直悬停模式按钮 */
-    private Button mVerHoverBtn;
-    /** 垂直移动模式按钮 */
-    private Button mVerMoveBtn;
+    private Button mCreateTaskBtn;//新建任务按钮
+    private EditText mNewTaskNameET;//任务名称输入框
+    /** 模式选择页 */
+    private RelativeLayout mTaskModeLayout;
+    private Button mModeBackBtn;//模式选择页返回按钮
+    private Button mVerHoverBtn;//模式：垂直悬停
+    private Button mVerMoveBtn;//模式：垂直移动
+    private Button mSurroundHoverBtn;//模式：定点环绕悬停
+    private Button mSurroundMoveBtn;//模式：定点环绕移动
+    private Button mWayPointBtn;//模式：航点飞行
+    private Button mSpaceBtn;//模式：控件探测
+    private Button mScanBtn;//模式：扫描模式
+    private Button mFreeBtn;//模式：遥控模式
     /** 垂直悬停模式参数设置 */
-    private RelativeLayout mPatternVerticalLayout;
+    private RelativeLayout mModeVerticalHoverLayout;
     /** 垂直悬停模式参数设置页返回按钮 */
-    private Button mPVBackBtn;
-
+    private Button mVHBackBtn;
 
     /** 从地图选基点，地图功能示例:添加点，获取无人机位置 */
     private Button mSelectedFromMapBtn;
@@ -143,6 +143,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         fm = getFragmentManager();
         showFragment(POSITION_AMAP_FRAGMENT);
 
+        // Fragment
         llMapFragment = (LinearLayout) findViewById(R.id.ll_amap);
         llVideoFragment = (LinearLayout) findViewById(R.id.ll_video);
         llDataFragment = (LinearLayout) findViewById(R.id.ll_data);
@@ -154,29 +155,45 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         llVideoFragment.setOnClickListener(this);
         llDataFragment.setOnClickListener(this);
 
+        // mission
+        mTaskCreateLayout = (LinearLayout) findViewById(R.id.layout_task_create);
+        mTaskModeLayout = (RelativeLayout) findViewById(R.id.layout_task_mode_select);
+        mModeVerticalHoverLayout = (RelativeLayout) findViewById(R.id.layout_mode_vertical_hover);
+        // create task
         mCreateTaskBtn = (Button) findViewById(R.id.btn_create_task);
         mCreateTaskBtn.setOnClickListener(this);
         mNewTaskNameET = (EditText) findViewById(R.id.et_new_task_name);
-        mTaskCreateLayout = (LinearLayout) findViewById(R.id.layout_task_create);
-        mTaskPatternLayout = (RelativeLayout) findViewById(R.id.layout_task_create_pattern);
-        mPatternVerticalLayout = (RelativeLayout) findViewById(R.id.layout_pattern_vertical);
-        mPatternBackBtn = (Button) findViewById(R.id.btn_pattern_back);
-        mPatternBackBtn.setOnClickListener(this);
-        mVerHoverBtn = (Button) findViewById(R.id.btn_ver_hover);
+        // pattern select
+        mModeBackBtn = (Button) findViewById(R.id.btn_mode_back);
+        mModeBackBtn.setOnClickListener(this);
+        mVerHoverBtn = (Button) findViewById(R.id.btn_mode_vertical_hover);
         mVerHoverBtn.setOnClickListener(this);
-        mVerMoveBtn = (Button) findViewById(R.id.btn_ver_move);
+        mVerMoveBtn = (Button) findViewById(R.id.btn_mode_vertical_move);
         mVerMoveBtn.setOnClickListener(this);
-        mPVBackBtn = (Button) findViewById(R.id.btn_pv_back);
-        mPVBackBtn.setOnClickListener(this);
+        mSurroundHoverBtn = (Button) findViewById(R.id.btn_mode_surround_hover);
+        mSurroundHoverBtn.setOnClickListener(this);
+        mSurroundMoveBtn = (Button) findViewById(R.id.btn_mode_surround_move);
+        mSurroundMoveBtn.setOnClickListener(this);
+        mWayPointBtn = (Button) findViewById(R.id.btn_mode_way_point);
+        mWayPointBtn.setOnClickListener(this);
+        mSpaceBtn = (Button) findViewById(R.id.btn_mode_space);
+        mSpaceBtn.setOnClickListener(this);
+        mScanBtn = (Button) findViewById(R.id.btn_mode_scan);
+        mScanBtn.setOnClickListener(this);
+        mFreeBtn = (Button) findViewById(R.id.btn_mode_free);
+        mFreeBtn.setOnClickListener(this);
+
+        mVHBackBtn = (Button) findViewById(R.id.btn_vh_back);
+        mVHBackBtn.setOnClickListener(this);
 
         // 地图功能示例添加点
         mSelectedFromMapBtn = (Button) findViewById(R.id.btn_selected_from_map);
         mSelectedFromMapBtn.setOnClickListener(this);
         // 获取无人机位置
-        mGetPlaneBtn = (Button) findViewById(R.id.btn_get_plane);
+        mGetPlaneBtn = (Button) findViewById(R.id.btn_vh_get_plane);
         mGetPlaneBtn.setOnClickListener(this);
-        mLatET = (EditText) findViewById(R.id.et_lat);
-        mLngET = (EditText) findViewById(R.id.et_lng);
+        mLatET = (EditText) findViewById(R.id.et_vh_lat);
+        mLngET = (EditText) findViewById(R.id.et_vh_lng);
     }
 
     protected BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -304,8 +321,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 String newTaskName = mNewTaskNameET.getText().toString();
                 if(!"".equals(newTaskName)) {
                     mTaskCreateLayout.setVisibility(View.GONE);
-                    mTaskPatternLayout.setVisibility(View.VISIBLE);
-                    mPatternVerticalLayout.setVisibility(View.GONE);
+                    mTaskModeLayout.setVisibility(View.VISIBLE);
+                    mModeVerticalHoverLayout.setVisibility(View.GONE);
                 } else {
                     ToastUtils.setResultToToast(HomeActivity.this, "任务名称不可为空");
                     return;
@@ -313,36 +330,67 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             //从飞行模式选择界面返回创建任务界面按钮
-            case R.id.btn_pattern_back:
+            case R.id.btn_mode_back:
                 mTaskCreateLayout.setVisibility(View.VISIBLE);
-                mTaskPatternLayout.setVisibility(View.GONE);
-                mPatternVerticalLayout.setVisibility(View.GONE);
+                mTaskModeLayout.setVisibility(View.GONE);
+                mModeVerticalHoverLayout.setVisibility(View.GONE);
                 break;
 
-            //模式一：垂直悬停
-            case R.id.btn_ver_hover:
+            case R.id.btn_mode_vertical_hover://模式一：垂直悬停
                 //TODO===需要变量保存当前选择的模式类型，并传递给Fragment
                 mTaskCreateLayout.setVisibility(View.GONE);
-                mTaskPatternLayout.setVisibility(View.GONE);
-                mPatternVerticalLayout.setVisibility(View.VISIBLE);
+                mTaskModeLayout.setVisibility(View.GONE);
+                mModeVerticalHoverLayout.setVisibility(View.VISIBLE);
                 break;
-            //TODO== 一共八种模式
-            /*case R.id.btn_ver_move:
-                break;*/
-            case R.id.btn_ver_move:
-                ToastUtils.setResultToToast(HomeActivity.this, mVerMoveBtn.getText().toString());
-                break;
-            case R.id.btn_pv_back://从参数设置界面返回飞行模式选择界面
+
+            case R.id.btn_mode_vertical_move://模式二：垂直移动
                 mTaskCreateLayout.setVisibility(View.GONE);
-                mTaskPatternLayout.setVisibility(View.VISIBLE);
-                mPatternVerticalLayout.setVisibility(View.GONE);
+                mTaskModeLayout.setVisibility(View.GONE);
                 break;
+
+            case R.id.btn_mode_surround_hover://模式三：定点环绕悬停
+                mTaskCreateLayout.setVisibility(View.GONE);
+                mTaskModeLayout.setVisibility(View.GONE);
+                break;
+
+            case R.id.btn_mode_surround_move://模式四：定点环绕移动
+                mTaskCreateLayout.setVisibility(View.GONE);
+                mTaskModeLayout.setVisibility(View.GONE);
+                break;
+
+            /*case R.id.btn_mode_way_point://模式五：航点飞行
+                mTaskCreateLayout.setVisibility(View.GONE);
+                mTaskModeLayout.setVisibility(View.GONE);
+                break;
+
+            case R.id.btn_mode_space://模式六：空间探测
+                mTaskCreateLayout.setVisibility(View.GONE);
+                mTaskModeLayout.setVisibility(View.GONE);
+                break;
+
+            case R.id.btn_mode_scan://模式七：扫描模式
+                mTaskCreateLayout.setVisibility(View.GONE);
+                mTaskModeLayout.setVisibility(View.GONE);
+                break;
+
+            case R.id.btn_mode_free://模式八：遥控模式
+                mTaskCreateLayout.setVisibility(View.GONE);
+                mTaskModeLayout.setVisibility(View.GONE);
+                break;*/
+
+            case R.id.btn_vh_back://从参数设置界面返回飞行模式选择界面
+                mTaskCreateLayout.setVisibility(View.GONE);
+                mTaskModeLayout.setVisibility(View.VISIBLE);
+                mModeVerticalHoverLayout.setVisibility(View.GONE);
+                break;
+
             case R.id.btn_selected_from_map://地图功能示例：添加点
                 enableDisableAdd();
                 break;
-            case R.id.btn_get_plane://地图功能示例：获取无人机位置
+
+            case R.id.btn_vh_get_plane://地图功能示例：获取无人机位置
                 if(amapFragment == null) {
-                    AmapFragment amapFragment = (AmapFragment) getFragmentManager().findFragmentById(R.id.layout_pattern_vertical);
+                    AmapFragment amapFragment = (AmapFragment) getFragmentManager().findFragmentById(R.id.layout_mode_vertical_hover);
                 }
                 //TODO=== 通过amapFragment可调用其中定义的方法
                 //amapFragment.
