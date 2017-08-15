@@ -40,7 +40,7 @@
                 android:textSize="@dimen/text_size_10" />
 
             <EditText
-                android:id="@+id/et_vh_lat"
+                android:id="@+id/et_vh_lng"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/activity_margin_30"
                 android:layout_marginRight="@dimen/activity_margin_6"
@@ -82,7 +82,7 @@
                 android:textSize="@dimen/text_size_10" />
 
             <EditText
-                android:id="@+id/et_vh_lng"
+                android:id="@+id/et_vh_lat"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/activity_margin_30"
                 android:layout_marginRight="@dimen/activity_margin_6"

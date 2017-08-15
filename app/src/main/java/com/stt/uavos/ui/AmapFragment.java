@@ -1,6 +1,7 @@
 package com.stt.uavos.ui;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -38,6 +39,8 @@ public class AmapFragment extends Fragment implements View.OnClickListener, AMap
     private final Map<Integer, Marker> mMarkers = new ConcurrentHashMap<Integer, Marker>();
     private Marker droneMarker = null;
 
+    ICallBack iCallBack;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +58,12 @@ public class AmapFragment extends Fragment implements View.OnClickListener, AMap
         return view;
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        iCallBack = (ICallBack) getActivity();
+    }
+
     private void initMapView() {
         if(aMap == null) {
             aMap = mapView.getMap();
@@ -69,6 +78,8 @@ public class AmapFragment extends Fragment implements View.OnClickListener, AMap
     public void onMapClick(LatLng point) {
         if (HomeActivity.getIsAdded() == true){
             markWaypoint(point);
+            iCallBack.getPointFromAmapFragment(point);
+
             /*Waypoint mWaypoint = new Waypoint(point.latitude, point.longitude, altitude);
             //Add Waypoints to Waypoint arraylist;
             if (HomeActivity.waypointMissionBuilder != null) {
@@ -83,6 +94,12 @@ public class AmapFragment extends Fragment implements View.OnClickListener, AMap
         }else{
             ToastUtils.setResultToToast(getActivity(), "Cannot Add Waypoint");
         }
+    }
+    /**
+     * 定义一个回调接口：当前地图点击的点
+     */
+    public interface ICallBack{
+        public void getPointFromAmapFragment(LatLng point);
     }
 
     public void markWaypoint(LatLng point) {

@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.amap.api.maps2d.model.LatLng;
 import com.stt.uavos.R;
 import com.stt.uavos.UAVOSApplication;
 import com.stt.uavos.utils.ToastUtils;
@@ -43,7 +44,7 @@ import dji.sdk.sdkmanager.DJISDKManager;
  * 主界面
  */
 
-public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
+public class HomeActivity extends AppCompatActivity implements View.OnClickListener, AmapFragment.ICallBack{
 
     private static boolean isStarted = false;
 
@@ -398,6 +399,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 mLngET.setText(droneLocationLng + "");
                 break;
         }
+    }
+
+    @Override
+    public void getPointFromAmapFragment(LatLng point) {
+        mLatET.setText(point.latitude + "");
+        mLngET.setText(point.longitude + "");
     }
 
     public void uploadWayPointMission(){
