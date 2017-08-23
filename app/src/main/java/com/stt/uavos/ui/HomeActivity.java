@@ -13,16 +13,22 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.amap.api.maps2d.model.LatLng;
 import com.stt.uavos.R;
 import com.stt.uavos.UAVOSApplication;
+import com.stt.uavos.db.UAVOSDB;
+import com.stt.uavos.model.Mission;
+import com.stt.uavos.utils.AnalyzeUtil;
 import com.stt.uavos.utils.ToastUtils;
 
 import dji.common.error.DJIError;
@@ -44,9 +50,7 @@ import dji.sdk.sdkmanager.DJISDKManager;
  * 主界面
  */
 
-public class HomeActivity extends AppCompatActivity implements View.OnClickListener, AmapFragment.ICallBack{
-
-    private static boolean isStarted = false;
+public class HomeActivity extends AppCompatActivity implements View.OnClickListener, AmapFragment.ICallBack {
 
     private FragmentManager fm;
     private AmapFragment amapFragment;
@@ -56,18 +60,31 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private static final int POSITION_VIDEO_FRAGMENT = 2;
     private static final int POSITION_DATA_FRAGMENT = 3;
     private int position = 1;//记录当前是第几个Fragment，默认为1
-    private LinearLayout llMapFragment,llVideoFragment,llDataFragment;
+    private LinearLayout llMapFragment, llVideoFragment, llDataFragment;
+    private TextView mTabMapTV,mTabVideoTV,mTabDataTV;
+    private ImageView mTabMapIV,mTabVideoIV,mTabDataIV;
 
     public static WaypointMission.Builder waypointMissionBuilder;
     private FlightController mFlightController;
     private WaypointMissionOperator instance;
     public double droneLocationLat = 181, droneLocationLng = 181;
 
-    /** 新建任务页 */
+    private UAVOSDB uavosDB;
+
+    /**
+     * 地图界面
+     */
+    private TextView mDisplayDataTV;
+
+    /**
+     * 新建任务页
+     */
     private LinearLayout mTaskCreateLayout;
     private Button mCreateTaskBtn;//新建任务按钮
     private EditText mNewTaskNameET;//任务名称输入框
-    /** 模式选择页 */
+    /**
+     * 模式选择页
+     */
     private RelativeLayout mTaskModeLayout;
     private Button mModeBackBtn;//模式选择页返回按钮
     private Button mVerHoverBtn;//模式：垂直悬停
@@ -78,13 +95,22 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private Button mSpaceBtn;//模式：控件探测
     private Button mScanBtn;//模式：扫描模式
     private Button mFreeBtn;//模式：遥控模式
-    /** 垂直悬停模式参数设置 */
+    /**
+     * 垂直悬停模式参数设置
+     */
     private RelativeLayout mModeVerticalHoverLayout;
-    /** 垂直悬停模式参数设置页返回按钮 */
+    private RelativeLayout mModeVerticalMoveLayout;
+    private RelativeLayout mModeSurroundHoverLayout;
+    private RelativeLayout mModeSurroundMoveLayout;
+    /**
+     * 垂直悬停模式参数设置页返回按钮
+     */
     private Button mVHBackBtn;
 
-    /** 从地图选基点，地图功能示例:添加点，获取无人机位置 */
-    private Button mSelectedFromMapBtn;
+    /**
+     * 从地图选基点，地图功能示例:添加点，获取无人机位置
+     */
+    /*private Button mSelectedFromMapBtn;*/
     private static boolean isAdd = false;
     private Button mGetPlaneBtn;
     private EditText mLatET;
@@ -93,7 +119,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        isStarted = true;
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             ActivityCompat.requestPermissions(this,
@@ -113,6 +138,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         filter.addAction(UAVOSApplication.FLAG_CONNECTION_CHANGE);
         registerReceiver(mReceiver, filter);
 
+        uavosDB = UAVOSDB.getInstance(this);
         initUI();
         addListener();
     }
@@ -141,25 +167,26 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initUI() {
-        fm = getFragmentManager();
-        showFragment(POSITION_AMAP_FRAGMENT);
-
         // Fragment
         llMapFragment = (LinearLayout) findViewById(R.id.ll_amap);
         llVideoFragment = (LinearLayout) findViewById(R.id.ll_video);
         llDataFragment = (LinearLayout) findViewById(R.id.ll_data);
-        llMapFragment.setFocusable(true);
-        llMapFragment.requestFocus();// 默认选中地图界面
-        llVideoFragment.setFocusable(false);
-        llDataFragment.setFocusable(false);
         llMapFragment.setOnClickListener(this);
         llVideoFragment.setOnClickListener(this);
         llDataFragment.setOnClickListener(this);
-
+        mTabMapTV = (TextView) findViewById(R.id.tv_tab_home_map);
+        mTabVideoTV = (TextView) findViewById(R.id.tv_tab_home_video);
+        mTabDataTV = (TextView) findViewById(R.id.tv_tab_home_data);
+        mTabMapIV = (ImageView) findViewById(R.id.iv_tab_home_map);
+        mTabVideoIV = (ImageView) findViewById(R.id.iv_tab_home_video);
+        mTabDataIV = (ImageView) findViewById(R.id.iv_tab_home_data);
         // mission
         mTaskCreateLayout = (LinearLayout) findViewById(R.id.layout_task_create);
         mTaskModeLayout = (RelativeLayout) findViewById(R.id.layout_task_mode_select);
         mModeVerticalHoverLayout = (RelativeLayout) findViewById(R.id.layout_mode_vertical_hover);
+        mModeVerticalMoveLayout = (RelativeLayout) findViewById(R.id.layout_mode_vertical_move);
+        mModeSurroundHoverLayout = (RelativeLayout) findViewById(R.id.layout_mode_surround_hover);
+        mModeSurroundMoveLayout = (RelativeLayout) findViewById(R.id.layout_mode_surround_move);
         // create task
         mCreateTaskBtn = (Button) findViewById(R.id.btn_create_task);
         mCreateTaskBtn.setOnClickListener(this);
@@ -187,14 +214,19 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         mVHBackBtn = (Button) findViewById(R.id.btn_vh_back);
         mVHBackBtn.setOnClickListener(this);
 
-        // 地图功能示例添加点
-        mSelectedFromMapBtn = (Button) findViewById(R.id.btn_selected_from_map);
-        mSelectedFromMapBtn.setOnClickListener(this);
         // 获取无人机位置
         mGetPlaneBtn = (Button) findViewById(R.id.btn_vh_get_plane);
         mGetPlaneBtn.setOnClickListener(this);
         mLatET = (EditText) findViewById(R.id.et_vh_lat);
         mLngET = (EditText) findViewById(R.id.et_vh_lng);
+
+        mDisplayDataTV = (TextView) findViewById(R.id.tv_display_data);
+
+        fm = getFragmentManager();
+        showFragment(POSITION_AMAP_FRAGMENT);
+        resetRightUI();
+        mTaskCreateLayout.setVisibility(View.VISIBLE);
+
     }
 
     protected BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -204,42 +236,48 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         }
     };
 
-    private void onProductConnectionChange()
-    {
+    private void onProductConnectionChange() {
         initFlightController();
     }
 
     public void initFlightController() {
         BaseProduct product = UAVOSApplication.getProductInstance();
-        if(product != null && product.isConnected()) {
-            if(product instanceof Aircraft) {
+        if (product != null && product.isConnected()) {
+            if (product instanceof Aircraft) {
                 mFlightController = ((Aircraft) product).getFlightController();
             }
         }
 
-        if(mFlightController != null) {
+        if (mFlightController != null) {
             mFlightController.setStateCallback(new FlightControllerState.Callback() {
                 @Override
                 public void onUpdate(@NonNull FlightControllerState djiFlightControllerCurrentState) {
                     droneLocationLat = djiFlightControllerCurrentState.getAircraftLocation().getLatitude();
                     droneLocationLng = djiFlightControllerCurrentState.getAircraftLocation().getLongitude();
-                    //TODO=== 坐标转换
+                    //TODO===坐标转换
                     /*GCJ02_pos = GCJ2WGS.getGCJ02Location(new LatLng(droneLocationLatW,droneLocationLngW));
                     droneLocationLat = GCJ02_pos.latitude;
                     droneLocationLng = GCJ02_pos.longitude;*/
                     amapFragment.updateDroneLocation(droneLocationLat, droneLocationLng);
                 }
             });
-        }
-    }
 
-    private void enableDisableAdd(){
-        if (isAdd == false) {
-            isAdd = true;
-            mSelectedFromMapBtn.setText("退出选择模式");
-        }else{
-            isAdd = false;
-            mSelectedFromMapBtn.setText("从地图选择基点");
+            mFlightController.setOnboardSDKDeviceDataCallback(new FlightController.OnboardSDKDeviceDataCallback() {
+                @Override
+                public void onReceive(byte[] bytes) {
+                    Mission mission = AnalyzeUtil.analyzeMission(new String(bytes));
+                    if(mission != null) {
+                        String realData = mission.getData();
+                        if(!TextUtils.isEmpty(realData)) {
+                            mDisplayDataTV.setText(realData);//实时数据显示
+                        }
+                        uavosDB.saveMission(mission);
+                    }
+
+                    //TODO===什么时候开始保存数据
+
+                }
+            });
         }
     }
 
@@ -293,26 +331,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.ll_amap:
-                llMapFragment.setFocusable(true);
-                llMapFragment.requestFocus();// 默认选中地图界面
-                llVideoFragment.setFocusable(false);
-                llDataFragment.setFocusable(false);
                 showFragment(POSITION_AMAP_FRAGMENT);
                 position = POSITION_AMAP_FRAGMENT;
                 break;
             case R.id.ll_video:
-                llMapFragment.setFocusable(false);
-                llVideoFragment.setFocusable(true);
-                llVideoFragment.requestFocus();
-                llDataFragment.setFocusable(false);
                 showFragment(POSITION_VIDEO_FRAGMENT);
                 position = POSITION_VIDEO_FRAGMENT;
                 break;
             case R.id.ll_data:
-                llMapFragment.setFocusable(false);
-                llVideoFragment.setFocusable(false);
-                llDataFragment.setFocusable(true);
-                llDataFragment.requestFocus();
                 showFragment(POSITION_DATA_FRAGMENT);
                 position = POSITION_DATA_FRAGMENT;
                 break;
@@ -320,10 +346,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             //新建任务按钮
             case R.id.btn_create_task:
                 String newTaskName = mNewTaskNameET.getText().toString();
-                if(!"".equals(newTaskName)) {
-                    mTaskCreateLayout.setVisibility(View.GONE);
+                if (!"".equals(newTaskName)) {
+                    resetRightUI();
                     mTaskModeLayout.setVisibility(View.VISIBLE);
-                    mModeVerticalHoverLayout.setVisibility(View.GONE);
                 } else {
                     ToastUtils.setResultToToast(HomeActivity.this, "任务名称不可为空");
                     return;
@@ -332,31 +357,29 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
             //从飞行模式选择界面返回创建任务界面按钮
             case R.id.btn_mode_back:
+                resetRightUI();
                 mTaskCreateLayout.setVisibility(View.VISIBLE);
-                mTaskModeLayout.setVisibility(View.GONE);
-                mModeVerticalHoverLayout.setVisibility(View.GONE);
                 break;
 
             case R.id.btn_mode_vertical_hover://模式一：垂直悬停
                 //TODO===需要变量保存当前选择的模式类型，并传递给Fragment
-                mTaskCreateLayout.setVisibility(View.GONE);
-                mTaskModeLayout.setVisibility(View.GONE);
+                resetRightUI();
                 mModeVerticalHoverLayout.setVisibility(View.VISIBLE);
                 break;
 
             case R.id.btn_mode_vertical_move://模式二：垂直移动
-                mTaskCreateLayout.setVisibility(View.GONE);
-                mTaskModeLayout.setVisibility(View.GONE);
+                resetRightUI();
+                mModeVerticalMoveLayout.setVisibility(View.VISIBLE);
                 break;
 
             case R.id.btn_mode_surround_hover://模式三：定点环绕悬停
-                mTaskCreateLayout.setVisibility(View.GONE);
-                mTaskModeLayout.setVisibility(View.GONE);
+                resetRightUI();
+                mModeSurroundHoverLayout.setVisibility(View.VISIBLE);
                 break;
 
             case R.id.btn_mode_surround_move://模式四：定点环绕移动
-                mTaskCreateLayout.setVisibility(View.GONE);
-                mTaskModeLayout.setVisibility(View.GONE);
+                resetRightUI();
+                mModeSurroundMoveLayout.setVisibility(View.VISIBLE);
                 break;
 
             /*case R.id.btn_mode_way_point://模式五：航点飞行
@@ -385,20 +408,26 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 mModeVerticalHoverLayout.setVisibility(View.GONE);
                 break;
 
-            case R.id.btn_selected_from_map://地图功能示例：添加点
-                enableDisableAdd();
-                break;
-
             case R.id.btn_vh_get_plane://地图功能示例：获取无人机位置
-                if(amapFragment == null) {
-                    AmapFragment amapFragment = (AmapFragment) getFragmentManager().findFragmentById(R.id.layout_mode_vertical_hover);
+                if (amapFragment == null) {
+                    amapFragment = (AmapFragment) getFragmentManager().findFragmentById(R.id.layout_mode_vertical_hover);
                 }
                 //TODO=== 通过amapFragment可调用其中定义的方法
-                //amapFragment.
+                amapFragment.updateDroneLocation(droneLocationLat, droneLocationLng);
+                amapFragment.cameraUpdate(droneLocationLat, droneLocationLng);
                 mLatET.setText(droneLocationLat + "");
                 mLngET.setText(droneLocationLng + "");
                 break;
         }
+    }
+
+    public void resetRightUI() {
+        mTaskCreateLayout.setVisibility(View.INVISIBLE);
+        mTaskModeLayout.setVisibility(View.INVISIBLE);
+        mModeVerticalHoverLayout.setVisibility(View.INVISIBLE);
+        mModeVerticalMoveLayout.setVisibility(View.INVISIBLE);
+        mModeSurroundHoverLayout.setVisibility(View.INVISIBLE);
+        mModeSurroundMoveLayout.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -407,15 +436,15 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         mLngET.setText(point.longitude + "");
     }
 
-    public void uploadWayPointMission(){
+    public void uploadWayPointMission() {
 
         getWaypointMissionOperator().uploadMission(new CommonCallbacks.CompletionCallback() {
             @Override
             public void onResult(DJIError error) {
                 if (error == null) {
-                    ToastUtils.setResultToToast(HomeActivity.this,"Mission upload successfully!");
+                    ToastUtils.setResultToToast(HomeActivity.this, "Mission upload successfully!");
                 } else {
-                    ToastUtils.setResultToToast(HomeActivity.this,"Mission upload failed, error: " + error.getDescription() + " retrying...");
+                    ToastUtils.setResultToToast(HomeActivity.this, "Mission upload failed, error: " + error.getDescription() + " retrying...");
                     getWaypointMissionOperator().retryUploadMission(null);
                 }
             }
@@ -423,23 +452,23 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    public void startWaypointMission(){
+    public void startWaypointMission() {
 
         getWaypointMissionOperator().startMission(new CommonCallbacks.CompletionCallback() {
             @Override
             public void onResult(DJIError error) {
-                ToastUtils.setResultToToast(HomeActivity.this,"Mission Start: " + (error == null ? "Successfully" : error.getDescription()));
+                ToastUtils.setResultToToast(HomeActivity.this, "Mission Start: " + (error == null ? "Successfully" : error.getDescription()));
             }
         });
 
     }
 
-    public void stopWaypointMission(){
+    public void stopWaypointMission() {
 
         getWaypointMissionOperator().stopMission(new CommonCallbacks.CompletionCallback() {
             @Override
             public void onResult(DJIError error) {
-                ToastUtils.setResultToToast(HomeActivity.this,"Mission Stop: " + (error == null ? "Successfully" : error.getDescription()));
+                ToastUtils.setResultToToast(HomeActivity.this, "Mission Stop: " + (error == null ? "Successfully" : error.getDescription()));
             }
         });
 
@@ -464,7 +493,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         fm = getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         hideFragment(ft);
-
+        resetTabFragmentBg();
         switch (indexFragment) {
             case POSITION_AMAP_FRAGMENT:
                 if (amapFragment != null) {
@@ -473,6 +502,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                     amapFragment = new AmapFragment();
                     ft.add(R.id.fragment_content, amapFragment);
                 }
+                llMapFragment.setBackground(getResources().getDrawable(R.mipmap.home_fg_btn_click));
+//                llMapFragment.setBackgroundResource(getResources().getResourceName(R.mipmap.home_fg_btn_click));
+                mTabMapTV.setTextColor(getResources().getColor(R.color.home_fg_click));
+                mTabMapIV.setBackground(getResources().getDrawable(R.mipmap.home_fg_map_click));
                 break;
             case POSITION_VIDEO_FRAGMENT:
                 if (videoFragment != null) {
@@ -481,6 +514,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                     videoFragment = new VideoFragment();
                     ft.add(R.id.fragment_content, videoFragment);
                 }
+                llVideoFragment.setBackground(getResources().getDrawable(R.mipmap.home_fg_btn_click));
+                mTabVideoTV.setTextColor(getResources().getColor(R.color.home_fg_click));
+                mTabVideoIV.setBackground(getResources().getDrawable(R.mipmap.home_fg_video_click));
                 break;
             case POSITION_DATA_FRAGMENT:
                 if (dataFragment != null) {
@@ -489,9 +525,24 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                     dataFragment = new DataFragment();
                     ft.add(R.id.fragment_content, dataFragment);
                 }
+                llDataFragment.setBackground(getResources().getDrawable(R.mipmap.home_fg_btn_click));
+                mTabDataTV.setTextColor(getResources().getColor(R.color.home_fg_click));
+                mTabDataIV.setBackground(getResources().getDrawable(R.mipmap.home_fg_data_click));
                 break;
         }
         ft.commit();
+    }
+
+    public void resetTabFragmentBg() {
+        llMapFragment.setBackground(getResources().getDrawable(R.mipmap.home_fg_btn_default));
+        mTabMapTV.setTextColor(getResources().getColor(R.color.home_fg_default));
+        mTabMapIV.setBackground(getResources().getDrawable(R.mipmap.home_fg_map_default));
+        llVideoFragment.setBackground(getResources().getDrawable(R.mipmap.home_fg_btn_default));
+        mTabVideoTV.setTextColor(getResources().getColor(R.color.home_fg_default));
+        mTabVideoIV.setBackground(getResources().getDrawable(R.mipmap.home_fg_video_default));
+        llDataFragment.setBackground(getResources().getDrawable(R.mipmap.home_fg_btn_default));
+        mTabDataTV.setTextColor(getResources().getColor(R.color.home_fg_default));
+        mTabDataIV.setBackground(getResources().getDrawable(R.mipmap.home_fg_data_default));
     }
 
     /**
@@ -511,11 +562,4 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    public static boolean isStarted() {
-        return isStarted;
-    }
-
-    public static boolean getIsAdded(){
-        return isAdd;
-    }
 }

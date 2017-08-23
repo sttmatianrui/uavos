@@ -8,8 +8,11 @@ import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.amap.api.maps2d.AMap;
+import com.amap.api.maps2d.CameraUpdate;
 import com.amap.api.maps2d.CameraUpdateFactory;
 import com.amap.api.maps2d.MapView;
 import com.amap.api.maps2d.model.BitmapDescriptorFactory;
@@ -40,6 +43,9 @@ public class AmapFragment extends Fragment implements View.OnClickListener, AMap
     private Marker droneMarker = null;
 
     ICallBack iCallBack;
+    private Button mSelectedFromMapBtn;
+    private ImageButton mLockPlaneImgBtn;
+    private static boolean isAdd = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,6 +59,11 @@ public class AmapFragment extends Fragment implements View.OnClickListener, AMap
         mapView = (MapView) view.findViewById(R.id.map);
         mapView.onCreate(savedInstanceState);
         mapView.setOnClickListener(this);
+        // 地图功能示例添加点
+        mSelectedFromMapBtn = (Button) view.findViewById(R.id.btn_selected_from_map);
+        mSelectedFromMapBtn.setOnClickListener(this);
+        mLockPlaneImgBtn = (ImageButton) view.findViewById(R.id.btn_lock_plane);
+        mLockPlaneImgBtn.setOnClickListener(this);
 
         initMapView();
         return view;
@@ -62,6 +73,16 @@ public class AmapFragment extends Fragment implements View.OnClickListener, AMap
     public void onAttach(Context context) {
         super.onAttach(context);
         iCallBack = (ICallBack) getActivity();
+    }
+
+    private void enableDisableAdd() {
+        if (isAdd == false) {
+            isAdd = true;
+            mSelectedFromMapBtn.setText("退出选择模式");
+        } else {
+            isAdd = false;
+            mSelectedFromMapBtn.setText("从地图选择基点");
+        }
     }
 
     private void initMapView() {
@@ -76,7 +97,7 @@ public class AmapFragment extends Fragment implements View.OnClickListener, AMap
 
     @Override
     public void onMapClick(LatLng point) {
-        if (HomeActivity.getIsAdded() == true){
+        if (isAdd){
             markWaypoint(point);
             iCallBack.getPointFromAmapFragment(point);
 
@@ -95,6 +116,19 @@ public class AmapFragment extends Fragment implements View.OnClickListener, AMap
             ToastUtils.setResultToToast(getActivity(), "Cannot Add Waypoint");
         }
     }
+
+    @Override
+    public void onClick(View view) {
+
+        switch (view.getId()) {
+            case R.id.btn_selected_from_map:
+                enableDisableAdd();
+                break;
+            case R.id.btn_lock_plane:
+                break;
+        }
+    }
+
     /**
      * 定义一个回调接口：当前地图点击的点
      */
@@ -108,35 +142,6 @@ public class AmapFragment extends Fragment implements View.OnClickListener, AMap
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
         Marker marker = aMap.addMarker(markerOptions);
         mMarkers.put(mMarkers.size(), marker);
-    }
-
-    @Override
-    public void onClick(View view) {
-
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        mapView.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mapView.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        mapView.onPause();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mapView.onDestroy();
     }
 
     // Update the drone location based on states from MCU.
@@ -163,5 +168,36 @@ public class AmapFragment extends Fragment implements View.OnClickListener, AMap
 
     public static boolean checkGpsCoordination(double latitude, double longitude) {
         return (latitude > -90 && latitude < 90 && longitude > -180 && longitude < 180) && (latitude != 0f && longitude != 0f);
+    }
+
+    public void cameraUpdate(final double droneLocationLat, final double droneLocationLng){
+        LatLng pos = new LatLng(droneLocationLat, droneLocationLng);
+        float zoomlevel = (float) 18.0;
+        CameraUpdate cu = CameraUpdateFactory.newLatLngZoom(pos, zoomlevel);
+        aMap.moveCamera(cu);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mapView.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mapView.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mapView.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mapView.onDestroy();
     }
 }

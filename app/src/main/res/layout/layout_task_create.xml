@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_task_create"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@mipmap/home_right"
@@ -62,7 +63,7 @@
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/text_size_10" />
 
-    <Button
+    <!--<Button
         android:id="@+id/btn_selected_from_map"
         android:layout_width="100dp"
         android:layout_height="@dimen/activity_margin_30"
@@ -72,6 +73,6 @@
         android:paddingTop="@dimen/activity_margin_8"
         android:text="从地图选择基点"
         android:textColor="@color/colorWhite"
-        android:textSize="@dimen/text_size_10" />
+        android:textSize="@dimen/text_size_10" />-->
 
 </LinearLayout>

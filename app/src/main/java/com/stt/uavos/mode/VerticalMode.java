@@ -1,12 +1,10 @@
 package com.stt.uavos.mode;
 
-import com.amap.api.maps2d.model.LatLng;
 import com.stt.uavos.MainActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import dji.common.error.DJIError;
 import dji.common.mission.waypoint.Waypoint;
 import dji.common.mission.waypoint.WaypointAction;
 import dji.common.mission.waypoint.WaypointActionType;

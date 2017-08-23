@@ -38,6 +38,11 @@ public class WelcomeActivity extends AppCompatActivity {
                     , 1);
         }
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
+        if((getIntent().getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) != 0) {
+            finish();
+            return;
+        }
+
         setContentView(R.layout.activity_welcome);
         initView();
         initData();

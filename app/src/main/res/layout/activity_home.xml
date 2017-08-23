@@ -103,80 +103,7 @@
             android:layout_weight="1"
             android:orientation="horizontal"
             android:paddingTop="@dimen/activity_margin_2">
-
-            <LinearLayout
-                android:id="@+id/ll_amap"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/activity_margin_2"
-                android:layout_weight="1"
-                android:background="@drawable/selector_home_fg"
-                android:clickable="true"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="@dimen/activity_margin_15"
-                    android:layout_height="@dimen/activity_margin_15"
-                    android:layout_marginRight="@dimen/activity_margin_10"
-                    android:src="@drawable/selector_home_map" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/home_btn_map"
-                    android:textColor="@drawable/selector_home_text"
-                    android:textSize="@dimen/text_size_12" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_video"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/activity_margin_2"
-                android:layout_weight="1"
-                android:background="@drawable/selector_home_fg"
-                android:clickable="true"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="@dimen/activity_margin_15"
-                    android:layout_height="@dimen/activity_margin_15"
-                    android:layout_marginRight="@dimen/activity_margin_10"
-                    android:src="@drawable/selector_home_video" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/home_btn_video"
-                    android:textColor="@drawable/selector_home_text"
-                    android:textSize="@dimen/text_size_12" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_data"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/selector_home_fg"
-                android:clickable="true"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="@dimen/activity_margin_15"
-                    android:layout_height="@dimen/activity_margin_15"
-                    android:layout_marginRight="@dimen/activity_margin_10"
-                    android:src="@drawable/selector_home_data" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/home_btn_data"
-                    android:textColor="@drawable/selector_home_text"
-                    android:textSize="@dimen/text_size_12" />
-            </LinearLayout>
+            <include layout="@layout/layout_tab_footer" />
         </LinearLayout>
 
     </LinearLayout>
@@ -189,20 +116,17 @@
         android:layout_below="@+id/ll_title"
         android:layout_marginTop="-6dp">
 
-        <include
-            android:id="@+id/layout_task_create"
-            layout="@layout/layout_task_create"
-            android:visibility="visible" />
+        <include layout="@layout/layout_task_create" />
 
-        <include
-            android:id="@+id/layout_task_mode_select"
-            layout="@layout/layout_task_mode_select"
-            android:visibility="invisible" />
+        <include layout="@layout/layout_task_mode_select" />
 
-        <include
-            android:id="@+id/layout_mode_vertical_hover"
-            layout="@layout/layout_mode_vertical_hover"
-            android:visibility="invisible" />
+        <include layout="@layout/layout_mode_vertical_hover"  />
+
+        <include layout="@layout/layout_mode_vertical_move" />
+
+        <include layout="@layout/layout_mode_surround_hover" />
+
+        <include layout="@layout/layout_mode_surround_move" />
 
     </RelativeLayout>
 
@@ -215,7 +139,7 @@
         <ImageView
             android:layout_width="270dp"
             android:layout_height="@dimen/activity_margin_50"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="19dp"
             android:background="@mipmap/uavos_title" />
     </LinearLayout>
     <!--<dji.ui.widget.FPVOverlayWidget

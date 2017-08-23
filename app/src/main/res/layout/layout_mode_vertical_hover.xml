@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_mode_vertical_hover"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@mipmap/home_right"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    android:padding="@dimen/activity_margin_6">
+    android:padding="@dimen/activity_margin_6"
+    android:visibility="invisible">
     <!-- 垂直悬停模式(简写)：vh -->
     <Button
         android:id="@+id/btn_vh_back"
@@ -195,9 +197,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/activity_margin_6"
                 android:layout_weight="1"
+                android:gravity="center"
                 android:text="@string/uav_parameter_monitor_points"
                 android:textColor="@color/colorWhite"
-                android:gravity="center"
                 android:textSize="@dimen/text_size_10" />
 
             <EditText
