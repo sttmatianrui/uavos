@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.amap.api.maps2d.AMap;
 import com.amap.api.maps2d.CameraUpdate;
@@ -28,6 +29,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import dji.common.mission.waypoint.Waypoint;
+import dji.thirdparty.retrofit2.http.HEAD;
 
 /**
  * Created by Administrator on 2017/8/7.
@@ -45,6 +47,8 @@ public class AmapFragment extends Fragment implements View.OnClickListener, AMap
     ICallBack iCallBack;
     private Button mSelectedFromMapBtn;
     private ImageButton mLockPlaneImgBtn;
+
+    private TextView mDisplayDataTV;
     private static boolean isAdd = false;
 
     @Override
@@ -64,6 +68,8 @@ public class AmapFragment extends Fragment implements View.OnClickListener, AMap
         mSelectedFromMapBtn.setOnClickListener(this);
         mLockPlaneImgBtn = (ImageButton) view.findViewById(R.id.btn_lock_plane);
         mLockPlaneImgBtn.setOnClickListener(this);
+
+        mDisplayDataTV = (TextView)view.findViewById(R.id.tv_display_data);
 
         initMapView();
         return view;
@@ -124,7 +130,12 @@ public class AmapFragment extends Fragment implements View.OnClickListener, AMap
             case R.id.btn_selected_from_map:
                 enableDisableAdd();
                 break;
-            case R.id.btn_lock_plane:
+
+            case R.id.btn_lock_plane:// 定位无人机位置
+                double lat = ((HomeActivity) getActivity()).getDroneLocationLat();
+                double lng = ((HomeActivity) getActivity()).getDroneLocationLng();
+                updateDroneLocation(lat, lng);
+                cameraUpdate(lat, lng);
                 break;
         }
     }

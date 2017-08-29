@@ -118,7 +118,7 @@
 
         <include layout="@layout/layout_task_create" />
 
-        <include layout="@layout/layout_task_mode_select" />
+        <include layout="@layout/layout_task_mode_select"  />
 
         <include layout="@layout/layout_mode_vertical_hover"  />
 

@@ -1,32 +1,49 @@
 package com.stt.uavos.model;
 
 /**
- * @ description: 任务类
+ * @ description: 任务详情类（任务数据）
  * @ time: 2017/8/15.
  * @ author: peiyun.feng
  * @ email: fengpy@aliyun.com
  */
 
 public class Mission {
-    private int id;
-    //TODO==完善任务类个字段，并添加setter、getter方法
+    /**
+     * 实时数据
+     */
     private String data;
+    /**
+     * 年月日
+     */
     private String date;
+    /**
+     * 时分秒
+     */
     private String time;
+    /**
+     * 纬度
+     */
     private String lat;
+    /**
+     * 经度
+     */
     private String lng;
+    /**
+     * 高度
+     */
     private String height;
+    /**
+     * 速度X
+     */
     private String xspeed;
+    /**
+     * 速度Y
+     */
     private String yspeed;
+    /**
+     * 速度Z
+     */
     private String zspeed;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getData() {
         return data;

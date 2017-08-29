@@ -6,8 +6,7 @@
     android:background="@mipmap/home_right"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    android:padding="@dimen/activity_margin_6"
-    android:visibility="invisible">
+    android:padding="@dimen/activity_margin_6">
     <!-- 垂直悬停模式(简写)：vh -->
     <Button
         android:id="@+id/btn_vh_back"

@@ -1,5 +1,7 @@
 package com.stt.uavos.mode;
 
+import com.amap.api.maps2d.model.LatLng;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,13 +14,15 @@ import dji.common.mission.waypoint.Waypoint;
 public class SetPoint {
     //--基点
     public double BasicLat,BasicLng;
+    public LatLng pos;
     //--航点列表
     public List<Waypoint> waypointList = new ArrayList<>();
 
-    protected void setBasicPoint(double lat,double lng){
+    public void setBasicPoint(double lat,double lng){
         BasicLat = lat;
         BasicLng = lng;
     }
+
 
     protected void addPoint(Waypoint mywaypoint){
         waypointList.add(mywaypoint);
