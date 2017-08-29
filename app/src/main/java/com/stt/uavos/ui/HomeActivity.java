@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amap.api.maps2d.model.LatLng;
+import com.amap.api.maps2d.model.MarkerOptions;
 import com.stt.uavos.R;
 import com.stt.uavos.UAVOSApplication;
 import com.stt.uavos.mode.SetMission;
@@ -104,29 +105,61 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private Button mVHSetPointBtn;
     private Button mVHGenerateRouteBtn;
     private Button mVHTakeOff;
-    /** 垂直移动模式 */
-    private Button mVMBackBtn;//垂直移动返回按钮
-
-    /** 环绕悬停模式 */
-    private Button mSHBackBtn;//环绕移动返回按钮
-
-    /** 环绕移动模式 */
-    private Button mSMBackBtn;//环绕移动返回按钮
-
-    private Button mGetPlaneBtn;
-    private EditText mLatET;
-    private EditText mLngET;
     private EditText mVHStartHeightET;
     private EditText mVHHighInterval;
     private EditText mVHMonitorPoints;
     private EditText mVHSingleMonitorTime;
 
+    private Button mVHGetPlaneBtn;
+    private EditText mVHLatET;
+    private EditText mVHLngET;
+    /** 垂直移动模式 */
+    private Button mVMBackBtn;//垂直移动返回按钮
+    private Button mVMSetPointBtn;
+    private Button mVMGenerateRouteBtn;
+    private Button mVMTakeOff;
+
+    private  EditText mVMStartHeightET;
+    private  EditText mVMMonitorHeight;
+    private  EditText mVMMonitorSpeed;
+
+    private Button mVMGetPlaneBtn;
+    private EditText mVMLatET;
+    private EditText mVMLngET;
+
+    /** 环绕悬停模式 */
+    private Button mSHBackBtn;//环绕移动返回按钮
+    private Button mSHSetPointBtn;
+    private Button mSHGenerateRouteBtn;
+    private Button mSHTakeOff;
+    private EditText mSHStartHeightET;
+    private EditText mSHSurroundRadius;
+    private EditText mSHMonitorPoints;
+    private EditText mSHSingleMonitorTime;
+
+    private Button mSHGetPlaneBtn;
+    private EditText mSHLatET;
+    private EditText mSHLngET;
+    /** 环绕移动模式 */
+    private Button mSMBackBtn;//环绕移动返回按钮
+    private Button mSMSetPointBtn;
+    private Button mSMGenerateRouteBtn;
+    private Button mSMTakeOff;
+    private EditText mSMStartHeightET;
+    private EditText mSMSurroundRadius;
+    private EditText mSMMonitorSpeed;
+
+    private Button mSMGetPlaneBtn;
+    private EditText mSMLatET;
+    private EditText mSMLngET;
+
+
 
     //-----
     private SetPoint mSetPoint = new SetPoint();
     private SetMission mSetMission = SetMission.FREE_MODE;
-    private VerticalMode mVerticalMode = new VerticalMode();
-    private SurroundMode mSurroundMode = new SurroundMode();
+    private VerticalMode mVerticalMode = new VerticalMode(this);
+    private SurroundMode mSurroundMode = new SurroundMode(this);
 
 
     @Override
@@ -226,10 +259,25 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         mFreeBtn.setOnClickListener(this);
 
         // 获取无人机位置
-        mGetPlaneBtn = (Button) findViewById(R.id.btn_vh_get_plane);
-        mGetPlaneBtn.setOnClickListener(this);
-        mLatET = (EditText) findViewById(R.id.et_vh_lat);
-        mLngET = (EditText) findViewById(R.id.et_vh_lng);
+        mVHGetPlaneBtn = (Button) findViewById(R.id.btn_vh_get_plane);
+        mVHGetPlaneBtn.setOnClickListener(this);
+        mVHLatET = (EditText) findViewById(R.id.et_vh_lat);
+        mVHLngET = (EditText) findViewById(R.id.et_vh_lng);
+
+        mVMGetPlaneBtn = (Button) findViewById(R.id.btn_vm_get_plane);
+        mVMGetPlaneBtn.setOnClickListener(this);
+        mVMLatET = (EditText) findViewById(R.id.et_vm_lat);
+        mVMLngET = (EditText) findViewById(R.id.et_vm_lng);
+
+        mSHGetPlaneBtn = (Button) findViewById(R.id.btn_sh_get_plane);
+        mSHGetPlaneBtn.setOnClickListener(this);
+        mSHLatET = (EditText) findViewById(R.id.et_sh_lat);
+        mSHLngET = (EditText) findViewById(R.id.et_sh_lng);
+
+        mSMGetPlaneBtn = (Button) findViewById(R.id.btn_sm_get_plane);
+        mSMGetPlaneBtn.setOnClickListener(this);
+        mSMLatET = (EditText) findViewById(R.id.et_sm_lat);
+        mSMLngET = (EditText) findViewById(R.id.et_sm_lng);
         //--垂直分布模式悬停
         mVHBackBtn = (Button) findViewById(R.id.btn_vh_back);
         mVHBackBtn.setOnClickListener(this);
@@ -248,16 +296,51 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         //--垂直分布模式移动
         mVMBackBtn = (Button) findViewById(R.id.btn_vm_back);
         mVMBackBtn.setOnClickListener(this);
+        mVMSetPointBtn = (Button) findViewById(R.id.btn_vm_set_point);
+        mVMSetPointBtn.setOnClickListener(this);
+        mVMGenerateRouteBtn = (Button) findViewById(R.id.btn_vm_generate_route);
+        mVMGenerateRouteBtn.setOnClickListener(this);
+
+        mVMStartHeightET = (EditText)findViewById(R.id.et_vm_start_height);
+        mVMMonitorHeight = (EditText) findViewById(R.id.et_vm_monitor_height);
+        mVMMonitorSpeed = (EditText) findViewById(R.id.et_vm_monitor_speed);
+
+        mVMTakeOff = (Button) findViewById(R.id.btn_vm_take_off);
+        mVMTakeOff.setOnClickListener(this);
         //--
 
-        //--垂直分布模式移动
+        //--定点环绕模式悬停
         mSHBackBtn = (Button) findViewById(R.id.btn_sh_back);
         mSHBackBtn.setOnClickListener(this);
+        mSHSetPointBtn = (Button) findViewById(R.id.btn_sh_set_point);
+        mSHSetPointBtn.setOnClickListener(this);
+        mSHGenerateRouteBtn = (Button) findViewById(R.id.btn_sh_generate_route);
+        mSHGenerateRouteBtn.setOnClickListener(this);
+
+        mSHStartHeightET = (EditText) findViewById(R.id.et_sh_start_height);
+        mSHSurroundRadius = (EditText) findViewById(R.id.et_sh_surround_radius);
+        mSHMonitorPoints = (EditText) findViewById(R.id.btn_sh_monitor_points);
+        mSHSingleMonitorTime = (EditText) findViewById(R.id.et_sh_single_monitor_time);
+
+        mSHTakeOff = (Button) findViewById(R.id.btn_sh_take_off);
+        mSHTakeOff.setOnClickListener(this);
+
         //--
 
-        //--垂直分布模式移动
+        //-定点环绕模式移动
         mSMBackBtn = (Button) findViewById(R.id.btn_sm_back);
         mSMBackBtn.setOnClickListener(this);
+        mSMSetPointBtn = (Button) findViewById(R.id.btn_sm_set_point);
+        mSMSetPointBtn.setOnClickListener(this);
+        mSMGenerateRouteBtn = (Button) findViewById(R.id.btn_sm_generate_route);
+        mSMGenerateRouteBtn.setOnClickListener(this);
+
+        mSMStartHeightET = (EditText)findViewById(R.id.et_sm_start_height);
+        mSMSurroundRadius = (EditText) findViewById(R.id.et_sm_surround_radius);
+        mSMMonitorSpeed = (EditText) findViewById(R.id.btn_sm_monitor_speed);
+
+        mSMTakeOff = (Button) findViewById(R.id.btn_sm_take_off);
+        mSMTakeOff.setOnClickListener(this);
         //--
 
 //        mSetMission = new SetMission();
@@ -406,11 +489,13 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.btn_mode_surround_hover://模式三：定点环绕悬停
+                mSetMission = SetMission.SURROUND_HOVER_MODE;
                 resetRightUI();
                 mModeSurroundHoverLayout.setVisibility(View.VISIBLE);
                 break;
 
             case R.id.btn_mode_surround_move://模式四：定点环绕移动
+                mSetMission = SetMission.SURROUND_MOVE_MODE;
                 resetRightUI();
                 mModeSurroundMoveLayout.setVisibility(View.VISIBLE);
                 break;
@@ -454,11 +539,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 resetRightUI();
                 mTaskModeLayout.setVisibility(View.VISIBLE);
                 break;
-
+            //垂直分布模式悬停----------------------------------------------------------------------
             case R.id.btn_vh_set_point:
                 //TODO===  把基点保存  并在地图做标注
-                mSetPoint.setBasicPoint(Double.parseDouble(mLatET.getText().toString()),Double.parseDouble(mLngET.getText().toString()));
+                mSetPoint.setBasicPoint(Double.parseDouble(mVHLatET.getText().toString()),Double.parseDouble(mVHLngET.getText().toString()));
                 Log.e(TAG, "保存基点");
+                ToastUtils.setResultToToast(this,"基点设置完毕");
                 break;
             case R.id.btn_vh_generate_route:
                 //TODO===  保存飞行参数信息;生成航线并在地图展示
@@ -481,14 +567,136 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_vh_take_off:
                 startWaypointMission();
                 break;
+            //垂直分布模式移动----------------------------------------------------------------------
+            case R.id.btn_vm_set_point:
+                //TODO===  把基点保存  并在地图做标注
+                mSetPoint.setBasicPoint(Double.parseDouble(mVHLatET.getText().toString()),Double.parseDouble(mVHLngET.getText().toString()));
+                Log.e(TAG, "保存基点");
+                ToastUtils.setResultToToast(this,"基点设置完毕");
+                break;
+            case R.id.btn_vm_generate_route:
+                //TODO===  保存飞行参数信息;生成航线并在地图展示
+                switch (mSetMission) {
+                    case VERTICAL_MOVE_MODE:
+                        if(mVHStartHeightET.getText().toString()!= null)
+                            mVerticalMode.setMoveHigh(Float.parseFloat(mVMStartHeightET.getText().toString()));
+                        mVerticalMode.setMoveInterval(Float.parseFloat(mVMMonitorHeight.getText().toString()));
+                        mVerticalMode.setMoveSpeed(Float.parseFloat(mVMMonitorSpeed.getText().toString()));
+
+
+                        mVerticalMode.setMoveMode(mSetPoint.BasicLat,mSetPoint.BasicLng);
+                        Log.e(TAG, "生成航线");
+
+                        break;
+                }
+
+                break;
+            case R.id.btn_vm_take_off:
+                mVerticalMode.startTimeline();
+                break;
+            //定点环绕分布模式悬停------------------------------------------------------------------
+            case R.id.btn_sh_set_point:
+                //TODO===  把基点保存  并在地图做标注
+                mSetPoint.setBasicPoint(Double.parseDouble(mSHLatET.getText().toString()),Double.parseDouble(mSHLngET.getText().toString()));
+                Log.e(TAG, "保存基点");
+                ToastUtils.setResultToToast(this,"基点设置完毕");
+                break;
+            case R.id.btn_sh_generate_route:
+                //TODO===  保存飞行参数信息;生成航线并在地图展示
+                ToastUtils.setResultToToast(this,"生成航线");
+                switch (mSetMission) {
+                    case SURROUND_HOVER_MODE:
+                        //ToastUtils.setResultToToast(this,"设置");
+                        if(mSHStartHeightET.getText().toString()!= null)
+                            mSurroundMode.setHoverHigh(Float.parseFloat(mSHStartHeightET.getText().toString()));
+                        if(mSHSurroundRadius.getText().toString()!= null)
+                            mSurroundMode.setHoverRadius(Float.parseFloat(mSHSurroundRadius.getText().toString()));
+                        if(mSHMonitorPoints.getText().toString()!= null)
+                            mSurroundMode.setHoverNumbers(Float.parseFloat(mSHMonitorPoints.getText().toString()));
+                        if(mSHSingleMonitorTime.getText().toString()!= null)
+                            mSurroundMode.setHoverTime(Float.parseFloat(mSHSingleMonitorTime.getText().toString()));
+
+                        mSurroundMode.setHoverMode(mSetPoint.BasicLat,mSetPoint.BasicLng);
+                        Log.e(TAG, "生成航线");
+                        loadWayPointMission(mSurroundMode.waypointMissionBuilder);
+                        uploadWayPointMission();
+                        break;
+                }
+
+                break;
+            case R.id.btn_sh_take_off:
+               startWaypointMission();
+                break;
+            //--------------------------------------------------------------------------------------
+            //定点环绕分布模式移动------------------------------------------------------------------
+            case R.id.btn_sm_set_point:
+                //TODO===  把基点保存  并在地图做标注
+                mSetPoint.setBasicPoint(Double.parseDouble(mSMLatET.getText().toString()),Double.parseDouble(mSMLngET.getText().toString()));
+                Log.e(TAG, "保存基点");
+                ToastUtils.setResultToToast(this,"基点设置完毕");
+                //aMap.addMarker(new MarkerOptions().position().title(task_name));
+                break;
+            case R.id.btn_sm_generate_route:
+                //TODO===  保存飞行参数信息;生成航线并在地图展示
+                ToastUtils.setResultToToast(this,"btn_sm_generate_route");
+                switch (mSetMission) {
+                    case SURROUND_MOVE_MODE:
+                        if(mSMStartHeightET.getText().toString()!= null)
+                            mSurroundMode.setMoveHigh(Float.parseFloat(mSMStartHeightET.getText().toString()));
+                        if(mSMSurroundRadius.getText().toString()!= null)
+                            mSurroundMode.setMoveRadius(Float.parseFloat(mSMSurroundRadius.getText().toString()));
+                        if(mSMMonitorSpeed.getText().toString()!= null)
+                            mSurroundMode.setMoveSpeed(Float.parseFloat(mSMMonitorSpeed.getText().toString()));
+
+                        mSurroundMode.setMoveMode(mSetPoint.BasicLat,mSetPoint.BasicLng);
+                        Log.e(TAG, "生成航线");
+
+                        //loadWayPointMission(mSurroundMode.waypointMissionBuilder);
+                        //uploadWayPointMission();
+                        break;
+                }
+
+                break;
+            case R.id.btn_sm_take_off:
+                ToastUtils.setResultToToast(this,"起飞");
+                mSurroundMode.startTimeline();
+                break;
+            //--------------------------------------------------------------------------------------
             case R.id.btn_vh_get_plane://地图功能示例：获取无人机位置
                 if(amapFragment == null) {
                     AmapFragment amapFragment = (AmapFragment) getFragmentManager().findFragmentById(R.id.layout_mode_vertical_hover);
                 }
                 //TODO=== 通过amapFragment可调用其中定义的方法
                 //amapFragment.
-                mLatET.setText(droneLocationLat + "");
-                mLngET.setText(droneLocationLng + "");
+                mVHLatET.setText(droneLocationLat + "");
+                mVHLngET.setText(droneLocationLng + "");
+                break;
+            case R.id.btn_vm_get_plane://地图功能示例：获取无人机位置
+                if(amapFragment == null) {
+                    AmapFragment amapFragment = (AmapFragment) getFragmentManager().findFragmentById(R.id.layout_mode_vertical_hover);
+                }
+                //TODO=== 通过amapFragment可调用其中定义的方法
+                //amapFragment.
+                mVMLatET.setText(droneLocationLat + "");
+                mVMLngET.setText(droneLocationLng + "");
+                break;
+            case R.id.btn_sh_get_plane://地图功能示例：获取无人机位置
+                if(amapFragment == null) {
+                    AmapFragment amapFragment = (AmapFragment) getFragmentManager().findFragmentById(R.id.layout_mode_vertical_hover);
+                }
+                //TODO=== 通过amapFragment可调用其中定义的方法
+                //amapFragment.
+                mSHLatET.setText(droneLocationLat + "");
+                mSHLngET.setText(droneLocationLng + "");
+                break;
+            case R.id.btn_sm_get_plane://地图功能示例：获取无人机位置
+                if(amapFragment == null) {
+                    AmapFragment amapFragment = (AmapFragment) getFragmentManager().findFragmentById(R.id.layout_mode_vertical_hover);
+                }
+                //TODO=== 通过amapFragment可调用其中定义的方法
+                //amapFragment.
+                mSMLatET.setText(droneLocationLat + "");
+                mSMLngET.setText(droneLocationLng + "");
                 break;
         }
     }
@@ -507,8 +715,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void getPointFromAmapFragment(LatLng point) {
-        mLatET.setText(point.latitude + "");
-        mLngET.setText(point.longitude + "");
+        mVHLatET.setText(point.latitude + "");
+        mVHLngET.setText(point.longitude + "");
+        mVMLatET.setText(point.latitude + "");
+        mVMLngET.setText(point.longitude + "");
+        mSHLatET.setText(point.latitude + "");
+        mSHLngET.setText(point.longitude + "");
+        mSMLatET.setText(point.latitude + "");
+        mSMLngET.setText(point.longitude + "");
     }
 
     //----------------------------------------------------------------------------------------------

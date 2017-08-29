@@ -256,14 +256,15 @@
                 android:textColor="@color/colorWhite"
                 android:textSize="@dimen/text_size_10" />
 
-            <!--<Button
+            <Button
+                android:id="@+id/btn_vm_take_off"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/activity_margin_30"
                 android:layout_weight="1"
                 android:background="@drawable/selector_btn_bg"
                 android:text="@string/uav_take_off"
                 android:textColor="@color/colorWhite"
-                android:textSize="@dimen/text_size_10" />-->
+                android:textSize="@dimen/text_size_10" />
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

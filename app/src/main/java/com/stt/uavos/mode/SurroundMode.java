@@ -1,11 +1,13 @@
 package com.stt.uavos.mode;
 
+import android.content.Context;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
 
 import com.amap.api.maps2d.model.LatLng;
 import com.amap.api.maps2d.model.MarkerOptions;
 import com.stt.uavos.ui.HomeActivity;
+import com.stt.uavos.utils.ToastUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +50,11 @@ public class SurroundMode {
     public float MoveHigh;
     public float MoveRadius;
     public float MoveSpeed;
+    private Context context;
+
+    public  SurroundMode(Context context) {
+        this.context = context;
+    }
 
     protected List<Waypoint> waypointList = new ArrayList<>();
     public WaypointMission.Builder waypointMissionBuilder;
@@ -124,12 +131,12 @@ public class SurroundMode {
         };
 
         //Step 1: takeoff from the ground
-        //setResultToToast("Step 1: takeoff from the ground");
+        ToastUtils.setResultToToast(context,"Step 1: takeoff from the ground");
         elements.add(new TakeOffAction());
 
 
         //Step 2: start a hotpoint mission
-        //setResultToToast("Step 2: start a hotpoint mission to surround 360 degree");
+        ToastUtils.setResultToToast(context,"Step 2: start a hotpoint mission to surround 360 degree");
         HotpointMission hotpointMission = new HotpointMission();
         hotpointMission.setHotpoint(new LocationCoordinate2D(lat,lng));
         hotpointMission.setAltitude(MoveHigh);
@@ -145,7 +152,7 @@ public class SurroundMode {
         //    setResultToToast("Step 3: Go 10 meters from home point");
         //    elements.add(new GoToAction(new LocationCoordinate2D(homeLatitude, homeLongitude), 20));
         //Step 4: go back home
-        //setResultToToast("Step 3: go back home");
+        ToastUtils.setResultToToast(context,"Step 3: go back home");
         elements.add(new GoHomeAction());
 
         if (missionControl.scheduledCount() > 0) {
@@ -158,35 +165,45 @@ public class SurroundMode {
     }
 
     private void updateTimelineStatus(@Nullable TimelineElement element, TimelineEvent event, DJIError error) {
-/*
+
         if (element != null) {
             if (element instanceof Mission) {
-                setResultToToast((((Mission) element).getMissionObject().getClass().getSimpleName()
+                ToastUtils.setResultToToast(context,(((Mission) element).getMissionObject().getClass().getSimpleName()
                         + " event is "
                         + event.toString()
                         + " "
                         + (error == null ? "" : error.getDescription())));
             } else {
-                setResultToToast((element.getClass().getSimpleName()
+
+                ToastUtils.setResultToToast(context, (element.getClass().getSimpleName()
                         + " event is "
                         + event.toString()
                         + " "
                         + (error == null ? "" : error.getDescription())));
+                /*setResultToToast((element.getClass().getSimpleName()
+                        + " event is "
+                        + event.toString()
+                        + " "
+                        + (error == null ? "" : error.getDescription())));*/
             }
         } else {
-            setResultToToast(("Timeline Event is " + event.toString() + " " + (error == null
+            ToastUtils.setResultToToast(context, ("Timeline Event is " + event.toString() + " " + (error == null
                     ? ""
                     : "Failed:"
                     + error.getDescription())));
+            /*setResultToToast(("Timeline Event is " + event.toString() + " " + (error == null
+                    ? ""
+                    : "Failed:"
+                    + error.getDescription())));*/
         }
-*/
+
     }
 
     public void startTimeline() {
         if (MissionControl.getInstance().scheduledCount() > 0) {
             MissionControl.getInstance().startTimeline();
         } else {
-           // ToastUtils.setResultToToast("Init the timeline first by clicking the Init button");
+            ToastUtils.setResultToToast(context,"Init the timeline first by clicking the Init button");
         }
     }
 
