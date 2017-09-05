@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -54,7 +56,6 @@ import dji.sdk.mission.waypoint.WaypointMissionOperator;
 import dji.sdk.mission.waypoint.WaypointMissionOperatorListener;
 import dji.sdk.products.Aircraft;
 import dji.sdk.sdkmanager.DJISDKManager;
-import dji.thirdparty.retrofit2.http.HEAD;
 import dji.ui.widget.dashboard.DashboardWidget;
 
 /**
@@ -165,6 +166,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private SetMission mSetMission = SetMission.FREE_MODE;
     private VerticalMode mVerticalMode = new VerticalMode(this);
     private SurroundMode mSurroundMode = new SurroundMode(this);
+
+    private Handler mHandler;// 给地图Fragment传递实时数据的Handler
 
 
     @Override
@@ -916,6 +919,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    public void setHandler(Handler handler){
+        this.mHandler = handler;
+    }
     //----------------------------------------------------------------------------------------------
     //--
     private void initDataTransmission() {
@@ -936,17 +942,21 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                     //UAVDTA:0.352|170815|133000|0.11111|0.11111|10.0|0.1|0.1|0.1
                     //--数据处理回调接口，bytes中是传回来的数据
                     //--这里做好数据解析，存储及显示
-                    String aa[] = str.split("\\|");
-                    if (amapFragment == null) {
+                    /*if (amapFragment == null) {
                         AmapFragment amapFragment = (AmapFragment) getFragmentManager().findFragmentById(R.id.layout_mode_vertical_hover);
                     }
+                    String aa[] = str.split("\\|");
                     TextView mDisplayDataTV = (TextView) amapFragment.getView().findViewById(R.id.tv_display_data);
-                    mDisplayDataTV.setText(aa[0].substring(7));
-
+                    mDisplayDataTV.setText(aa[0].substring(7));*/
+                    Mission mission = AnalyzeUtil.analyzeMission(str);
                     if(isStartSaveData) {
-                        Mission mission = AnalyzeUtil.analyzeMission(str);
                         uavosDB.saveMission(currentTaskId, mission);
                     }
+                    Message message = new Message();
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("mission", mission);
+                    message.setData(bundle);
+                    mHandler.sendMessage(message);
                 }
             });
         }

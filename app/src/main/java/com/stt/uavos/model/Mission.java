@@ -1,5 +1,7 @@
 package com.stt.uavos.model;
 
+import java.io.Serializable;
+
 /**
  * @ description: 任务详情类（任务数据）
  * @ time: 2017/8/15.
@@ -7,7 +9,7 @@ package com.stt.uavos.model;
  * @ email: fengpy@aliyun.com
  */
 
-public class Mission {
+public class Mission implements Serializable{
     /**
      * 实时数据
      */
