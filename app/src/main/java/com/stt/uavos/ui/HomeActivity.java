@@ -33,6 +33,7 @@ import com.stt.uavos.mode.SetMission;
 import com.stt.uavos.mode.SetPoint;
 import com.stt.uavos.mode.SurroundMode;
 import com.stt.uavos.mode.VerticalMode;
+import com.stt.uavos.mode.WaypointMode;
 import com.stt.uavos.utils.ToastUtils;
 
 import dji.common.error.DJIError;
@@ -100,6 +101,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private RelativeLayout mModeVerticalMoveLayout;
     private RelativeLayout mModeSurroundHoverLayout;
     private RelativeLayout mModeSurroundMoveLayout;
+    private RelativeLayout mModeWaypointLayout;
     /** 垂直悬停模式 */
     private Button mVHBackBtn;//垂直悬停返回按钮
     private Button mVHSetPointBtn;
@@ -152,6 +154,17 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private Button mSMGetPlaneBtn;
     private EditText mSMLatET;
     private EditText mSMLngET;
+    /** 航点模式 */
+    private Button mWPBackBtn;//环绕移动返回按钮
+    private Button mWPSetPointBtn;
+    private Button mWPGenerateRouteBtn;
+    private Button mWPTakeOff;
+    private EditText mWPStartHeightET;
+    private EditText mWPTime;
+
+    private Button mWPGetPlaneBtn;
+    private EditText mWPLatET;
+    private EditText mWPLngET;
 
 
 
@@ -160,6 +173,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private SetMission mSetMission = SetMission.FREE_MODE;
     private VerticalMode mVerticalMode = new VerticalMode(this);
     private SurroundMode mSurroundMode = new SurroundMode(this);
+    private WaypointMode mWaypointMode = new WaypointMode(this);
 
 
     @Override
@@ -234,7 +248,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         mModeVerticalMoveLayout = (RelativeLayout) findViewById(R.id.layout_mode_vertical_move);
         mModeSurroundHoverLayout = (RelativeLayout) findViewById(R.id.layout_mode_surround_hover);
         mModeSurroundMoveLayout = (RelativeLayout) findViewById(R.id.layout_mode_surround_move);
-        // create task
+        mModeWaypointLayout = (RelativeLayout) findViewById(R.id.layout_mode_waypoint);
+                // create task
         mCreateTaskBtn = (Button) findViewById(R.id.btn_create_task);
         mCreateTaskBtn.setOnClickListener(this);
         mNewTaskNameET = (EditText) findViewById(R.id.et_new_task_name);
@@ -278,6 +293,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         mSMGetPlaneBtn.setOnClickListener(this);
         mSMLatET = (EditText) findViewById(R.id.et_sm_lat);
         mSMLngET = (EditText) findViewById(R.id.et_sm_lng);
+
+        mWPGetPlaneBtn = (Button) findViewById(R.id.btn_wp_get_plane);
+        mWPGetPlaneBtn.setOnClickListener(this);
+        mWPLatET = (EditText) findViewById(R.id.et_wp_lat);
+        mWPLngET = (EditText) findViewById(R.id.et_wp_lng);
         //--垂直分布模式悬停
         mVHBackBtn = (Button) findViewById(R.id.btn_vh_back);
         mVHBackBtn.setOnClickListener(this);
@@ -341,6 +361,24 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         mSMTakeOff = (Button) findViewById(R.id.btn_sm_take_off);
         mSMTakeOff.setOnClickListener(this);
+        //--
+        //--航点模式
+        mWPBackBtn = (Button) findViewById(R.id.btn_wp_back);
+        mWPBackBtn.setOnClickListener(this);
+        mWPSetPointBtn = (Button) findViewById(R.id.btn_wp_set_point);
+        mWPSetPointBtn.setOnClickListener(this);
+        mWPGenerateRouteBtn = (Button) findViewById(R.id.btn_wp_generate_route);
+        mWPGenerateRouteBtn.setOnClickListener(this);
+
+        mWPStartHeightET = (EditText) findViewById(R.id.et_wp_start_height);
+        mWPTime = (EditText) findViewById(R.id.et_wp_time);
+
+        //mWPMonitorPoints = (EditText) findViewById(R.id.btn_wp_monitor_points);
+        //mWPSingleMonitorTime = (EditText) findViewById(R.id.et_wp_single_monitor_time);
+
+        mWPTakeOff = (Button) findViewById(R.id.btn_wp_take_off);
+        mWPTakeOff.setOnClickListener(this);
+
         //--
 
 //        mSetMission = new SetMission();
@@ -500,11 +538,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 mModeSurroundMoveLayout.setVisibility(View.VISIBLE);
                 break;
 
-            /*case R.id.btn_mode_way_point://模式五：航点飞行
-                mTaskCreateLayout.setVisibility(View.GONE);
-                mTaskModeLayout.setVisibility(View.GONE);
+            case R.id.btn_mode_way_point://模式五：航点飞行
+                mSetMission = SetMission.WAYPOINT_MODE;
+                resetRightUI();
+                mModeWaypointLayout.setVisibility(View.VISIBLE);
                 break;
-
+            /*
             case R.id.btn_mode_space://模式六：空间探测
                 mTaskCreateLayout.setVisibility(View.GONE);
                 mTaskModeLayout.setVisibility(View.GONE);
@@ -536,6 +575,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.btn_sm_back://从参数设置界面返回飞行模式选择界面
+                resetRightUI();
+                mTaskModeLayout.setVisibility(View.VISIBLE);
+                break;
+            case R.id.btn_wp_back://从参数设置界面返回飞行模式选择界面
                 resetRightUI();
                 mTaskModeLayout.setVisibility(View.VISIBLE);
                 break;
@@ -661,6 +704,39 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 ToastUtils.setResultToToast(this,"起飞");
                 mSurroundMode.startTimeline();
                 break;
+            //航点模式------------------------------------------------------------------
+            case R.id.btn_wp_set_point:
+                //TODO===  把基点保存  并在地图做标注
+                //mSetPoint.setBasicPoint(Double.parseDouble(mSHLatET.getText().toString()),Double.parseDouble(mSHLngET.getText().toString()));
+                mWaypointMode.addPoint(Double.parseDouble(mSHLatET.getText().toString()),Double.parseDouble(mSHLngET.getText().toString()));
+                Log.e(TAG, "保存航点");
+                //ToastUtils.setResultToToast(this,"航点设置完毕");
+                break;
+            case R.id.btn_wp_generate_route:
+                //TODO===  保存飞行参数信息;生成航线并在地图展示
+                ToastUtils.setResultToToast(this,"生成航线");
+                switch (mSetMission) {
+                    case WAYPOINT_MODE:
+                        //ToastUtils.setResultToToast(this,"设置");
+                        if(mWPStartHeightET.getText().toString()!= null)
+                            mWaypointMode.setHigh(Float.parseFloat(mWPStartHeightET.getText().toString()));
+                        //ToastUtils.setResultToToast(this,"飞行高度"+mWPStartHeightET.getText());
+                        if(mWPTime.getText().toString()!= null)
+                            mWaypointMode.setTime(Float.parseFloat(mWPTime.getText().toString()));
+                        //ToastUtils.setResultToToast(this,"飞行时间"+mWPTime.getText());
+
+                        mWaypointMode.setMode();
+                        Log.e(TAG, "生成航线");
+                        loadWayPointMission(mWaypointMode.waypointMissionBuilder);
+                        uploadWayPointMission();
+                        break;
+                }
+
+                break;
+            case R.id.btn_wp_take_off:
+                ToastUtils.setResultToToast(this,"起飞");
+                startWaypointMission();
+                break;
             //--------------------------------------------------------------------------------------
             case R.id.btn_vh_get_plane://地图功能示例：获取无人机位置
                 if(amapFragment == null) {
@@ -698,6 +774,15 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 mSMLatET.setText(droneLocationLat + "");
                 mSMLngET.setText(droneLocationLng + "");
                 break;
+            case R.id.btn_wp_get_plane://地图功能示例：获取无人机位置
+                if(amapFragment == null) {
+                    AmapFragment amapFragment = (AmapFragment) getFragmentManager().findFragmentById(R.id.layout_mode_vertical_hover);
+                }
+                //TODO=== 通过amapFragment可调用其中定义的方法
+                //amapFragment.
+                mWPLatET.setText(droneLocationLat + "");
+                mWPLngET.setText(droneLocationLng + "");
+                break;
         }
     }
 
@@ -711,6 +796,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         mModeVerticalMoveLayout.setVisibility(View.INVISIBLE);
         mModeSurroundHoverLayout.setVisibility(View.INVISIBLE);
         mModeSurroundMoveLayout.setVisibility(View.INVISIBLE);
+        mModeWaypointLayout.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -723,6 +809,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         mSHLngET.setText(point.longitude + "");
         mSMLatET.setText(point.latitude + "");
         mSMLngET.setText(point.longitude + "");
+        mWPLatET.setText(point.latitude + "");
+        mWPLngET.setText(point.longitude + "");
     }
 
     //----------------------------------------------------------------------------------------------
