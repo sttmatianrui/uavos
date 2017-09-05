@@ -131,6 +131,7 @@ public class VerticalMode {
         elements.add(new GoToAction(new LocationCoordinate2D(lat, lng), MoveHigh));
 
         ToastUtils.setResultToToast(context,"Step 4: Go 10 meters from target point with slow speed");
+
         elements.add(new GoToAction(new LocationCoordinate2D(lat, lng), MoveHigh + MoveInterval));
 
         //Step 4: go back home

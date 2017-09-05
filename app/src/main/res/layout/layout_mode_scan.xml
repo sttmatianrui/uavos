@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/layout_mode_surround_move"
+    android:id="@+id/layout_mode_scan"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@mipmap/home_right"
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:padding="@dimen/activity_margin_6">
-    <!-- 定点环绕移动模式(简写)：sm -->
+    <!-- 扫描模式：sc -->
     <Button
-        android:id="@+id/btn_sm_back"
+        android:id="@+id/btn_sc_back"
         android:layout_width="@dimen/btn_min_width"
         android:layout_height="@dimen/activity_margin_30"
         android:background="@drawable/selector_btn_bg"
@@ -20,10 +20,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/btn_sm_back"
-        android:orientation="vertical"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true">
+        android:layout_below="@id/btn_sc_back"
+        android:layout_marginTop="@dimen/activity_margin_15"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -42,7 +41,7 @@
                 android:textSize="@dimen/text_size_10" />
 
             <EditText
-                android:id="@+id/et_sm_lat"
+                android:id="@+id/sc_vp_lat"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/activity_margin_30"
                 android:layout_marginRight="@dimen/activity_margin_6"
@@ -55,12 +54,12 @@
                 android:textSize="@dimen/text_size_10" />
 
             <Button
-                android:id="@+id/btn_sm_set_point"
+                android:id="@+id/btn_sc_set_point"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/activity_margin_30"
                 android:layout_weight="2"
                 android:background="@drawable/selector_btn_bg"
-                android:text="@string/uav_parameter_set_base_point"
+                android:text="@string/uav_parameter_set_boundary"
                 android:textColor="@color/colorWhite"
                 android:textSize="@dimen/text_size_10" />
 
@@ -84,7 +83,7 @@
                 android:textSize="@dimen/text_size_10" />
 
             <EditText
-                android:id="@+id/et_sm_lng"
+                android:id="@+id/et_sc_lng"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/activity_margin_30"
                 android:layout_marginRight="@dimen/activity_margin_6"
@@ -97,12 +96,12 @@
                 android:textSize="@dimen/text_size_10" />
 
             <Button
-                android:id="@+id/btn_sm_cancel"
+                android:id="@+id/btn_sc_cancel"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/activity_margin_30"
-                android:layout_weight="2"
+                android:layout_height="31dp"
+                android:layout_weight="1.93"
                 android:background="@drawable/selector_btn_bg"
-                android:text="@string/cancel"
+                android:text="@string/delate_boundary"
                 android:textColor="@color/colorWhite"
                 android:textSize="@dimen/text_size_10" />
 
@@ -119,7 +118,7 @@
                 android:layout_weight="1" />
 
             <Button
-                android:id="@+id/btn_sm_get_plane"
+                android:id="@+id/btn_sc_get_plane"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/activity_margin_30"
                 android:layout_weight="4"
@@ -128,7 +127,6 @@
                 android:textColor="@color/colorWhite"
                 android:textSize="@dimen/text_size_10" />
         </LinearLayout>
-
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -146,7 +144,7 @@
                 android:textSize="@dimen/text_size_10" />
 
             <EditText
-                android:id="@+id/et_sm_start_height"
+                android:id="@+id/et_sc_start_height"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/activity_margin_30"
                 android:layout_weight="2"
@@ -169,12 +167,12 @@
                 android:layout_marginRight="@dimen/activity_margin_6"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="@string/uav_parameter_surround_radius"
+                android:text="@string/uav_parameter_scan_interval"
                 android:textColor="@color/colorWhite"
                 android:textSize="@dimen/text_size_10" />
 
             <EditText
-                android:id="@+id/et_sm_surround_radius"
+                android:id="@+id/et_sc_scan_interval"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/activity_margin_30"
                 android:layout_weight="2"
@@ -186,33 +184,7 @@
                 android:textSize="@dimen/text_size_10" />
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/activity_margin_10">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/activity_margin_6"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/uav_parameter_monitor_speed"
-                android:textColor="@color/colorWhite"
-                android:textSize="@dimen/text_size_10" />
-
-            <EditText
-                android:id="@+id/btn_sm_monitor_speed"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/activity_margin_30"
-                android:layout_weight="2"
-                android:background="@drawable/selector_edittext_bg"
-                android:lines="1"
-                android:paddingLeft="@dimen/activity_margin_6"
-                android:paddingRight="@dimen/activity_margin_6"
-                android:textColor="@color/colorWhite"
-                android:textSize="@dimen/text_size_10" />
-        </LinearLayout>
 
         <!--<LinearLayout
             android:layout_width="match_parent"
@@ -230,7 +202,6 @@
                 android:textSize="@dimen/text_size_10" />
 
             <EditText
-                android:id="@+id/et_single_monitor_time"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/activity_margin_30"
                 android:layout_weight="2"
@@ -250,7 +221,7 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/btn_sm_generate_route"
+                android:id="@+id/btn_sc_generate_route"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/activity_margin_30"
                 android:layout_marginRight="@dimen/activity_margin_6"
@@ -260,7 +231,7 @@
                 android:textSize="@dimen/text_size_10" />
 
             <Button
-                android:id="@+id/btn_sm_take_off"
+                android:id="@+id/btn_sc_take_off"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/activity_margin_30"
                 android:layout_weight="1"

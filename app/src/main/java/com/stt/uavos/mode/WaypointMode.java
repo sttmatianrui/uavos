@@ -1,5 +1,9 @@
 package com.stt.uavos.mode;
 
+import android.content.Context;
+
+import com.stt.uavos.utils.ToastUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,31 +18,35 @@ public class WaypointMode {
 
     public float High;
     public  float Time;
+    private Context context;
 
-    protected List<Waypoint> waypointList = new ArrayList<>();
-    public WaypointMission.Builder waypointMissionBuilder;
+    public  WaypointMode(Context context) {
+        this.context = context;
+    }
 
-    protected void setHigh(float ptr){
+    public List<Waypoint> waypointList = new ArrayList<>();
+    public WaypointMission.Builder waypointMissionBuilder =  new WaypointMission.Builder();
+
+    public void setHigh(float ptr){
         High = ptr;
     }
-    protected void setTime(float ptr){
+    public void setTime(float ptr){
         Time = ptr;
     }
 
-
+    public void  addPoint(double lat,double lng){
+        Waypoint mWaypoint = new Waypoint(lat, lng, 10);
+        waypointList.add(mWaypoint);
+        waypointMissionBuilder.waypointList(waypointList).waypointCount(waypointList.size());
+        ToastUtils.setResultToToast(context,"航点" + waypointList.size());
+    }
+    public void delatePoint(double lat,double lng){
+        Waypoint mWaypoint = new Waypoint(lat, lng, High);
+        waypointList.remove(mWaypoint);
+    }
 
 
     public void setMode() {
-
-
-        waypointMissionBuilder = new WaypointMission.Builder();
-/*
-        for (int i = 0; i < HoverNumbers; i++) {
-            final Waypoint eachWaypoint = new Waypoint(lat, lng, HoverHigh + HoverInterval * i);
-            eachWaypoint.addAction(new WaypointAction(WaypointActionType.STAY, (int) HoverTime * 1000));
-            waypointList.add(eachWaypoint);
-            waypointMissionBuilder.waypointList(waypointList).waypointCount(waypointList.size());
-        }
 
         waypointMissionBuilder.finishedAction(WaypointMissionFinishedAction.GO_HOME)
                 .headingMode(WaypointMissionHeadingMode.AUTO)
@@ -46,11 +54,18 @@ public class WaypointMode {
                 .maxFlightSpeed(10f)
                 .flightPathMode(WaypointMissionFlightPathMode.NORMAL);
 
-        waypointList.clear();
-*/
+        if (waypointMissionBuilder.getWaypointList().size() > 0){
+            ToastUtils.setResultToToast(context,waypointMissionBuilder.getWaypointList().size()+"");
+            for (int i=0; i< waypointMissionBuilder.getWaypointList().size(); i++){
+                waypointMissionBuilder.getWaypointList().get(i).altitude = High;
+            }
+
+            //ToastUtils.setResultToToast("Set Waypoint attitude successfully");
+        }
+
+        //waypointList.clear();
+
     }
-
-
 
 
 }
