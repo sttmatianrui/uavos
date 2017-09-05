@@ -118,7 +118,7 @@
 
         <include layout="@layout/layout_task_create" />
 
-        <include layout="@layout/layout_task_mode_select"       />
+        <include layout="@layout/layout_task_mode_select"  />
 
         <include layout="@layout/layout_mode_vertical_hover"  />
 
@@ -141,7 +141,7 @@
         <ImageView
             android:layout_width="270dp"
             android:layout_height="@dimen/activity_margin_50"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="19dp"
             android:background="@mipmap/uavos_title" />
     </LinearLayout>
     <!--<dji.ui.widget.FPVOverlayWidget

@@ -8,12 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dji.common.mission.waypoint.Waypoint;
-import dji.common.mission.waypoint.WaypointAction;
-import dji.common.mission.waypoint.WaypointActionType;
 import dji.common.mission.waypoint.WaypointMission;
-import dji.common.mission.waypoint.WaypointMissionFinishedAction;
-import dji.common.mission.waypoint.WaypointMissionFlightPathMode;
-import dji.common.mission.waypoint.WaypointMissionHeadingMode;
 
 /**
  * Created by 111112 on 2017/8/3.

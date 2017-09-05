@@ -2,11 +2,8 @@ package com.stt.uavos.mode;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
-import android.widget.Toast;
 
 import com.amap.api.maps2d.model.LatLng;
-import com.amap.api.maps2d.model.MarkerOptions;
-import com.stt.uavos.ui.HomeActivity;
 import com.stt.uavos.utils.ToastUtils;
 
 import java.util.ArrayList;

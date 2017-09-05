@@ -4,12 +4,13 @@ import android.Manifest;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -26,16 +27,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amap.api.maps2d.model.LatLng;
-import com.amap.api.maps2d.model.MarkerOptions;
 import com.stt.uavos.R;
 import com.stt.uavos.UAVOSApplication;
+import com.stt.uavos.db.UAVOSDB;
 import com.stt.uavos.mode.SetMission;
 import com.stt.uavos.mode.SetPoint;
 import com.stt.uavos.mode.SurroundMode;
 import com.stt.uavos.mode.VerticalMode;
+import com.stt.uavos.model.Mission;
+import com.stt.uavos.model.Task;
+import com.stt.uavos.utils.AnalyzeUtil;
 import com.stt.uavos.mode.WaypointMode;
 import com.stt.uavos.utils.ToastUtils;
-
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 import dji.common.error.DJIError;
 import dji.common.flightcontroller.FlightControllerState;
 import dji.common.mission.waypoint.WaypointMission;
@@ -49,13 +55,13 @@ import dji.sdk.mission.waypoint.WaypointMissionOperator;
 import dji.sdk.mission.waypoint.WaypointMissionOperatorListener;
 import dji.sdk.products.Aircraft;
 import dji.sdk.sdkmanager.DJISDKManager;
+import dji.ui.widget.dashboard.DashboardWidget;
 
 /**
  * Created by Administrator on 2017/7/31.
  * 主界面
  */
-
-public class HomeActivity extends AppCompatActivity implements View.OnClickListener, AmapFragment.ICallBack{
+public class HomeActivity extends AppCompatActivity implements View.OnClickListener, AmapFragment.ICallBack {
     private static String TAG = "HomeActivity";
 
     private FragmentManager fm;
@@ -66,20 +72,20 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private static final int POSITION_VIDEO_FRAGMENT = 2;
     private static final int POSITION_DATA_FRAGMENT = 3;
     private int position = 1;//记录当前是第几个Fragment，默认为1
-    private LinearLayout llMapFragment,llVideoFragment,llDataFragment;
+    private LinearLayout llMapFragment, llVideoFragment, llDataFragment;
 
-    private TextView mTabMapTV,mTabVideoTV,mTabDataTV;
-    private ImageView mTabMapIV,mTabVideoIV,mTabDataIV;
+    private TextView mTabMapTV, mTabVideoTV, mTabDataTV;
+    private ImageView mTabMapIV, mTabVideoIV, mTabDataIV;
 
     public static WaypointMission.Builder waypointMissionBuilder;
     private FlightController mFlightController;
     private WaypointMissionOperator instance;
     public double droneLocationLat = 181, droneLocationLng = 181;
 
-    /**
-     * 地图界面
-     */
-    private TextView mDisplayDataTV;
+    public UAVOSDB uavosDB;
+    private String currentTaskId = "";
+    private boolean isStartSaveData = false;
+    private DashboardWidget Compass;
 
     /** 新建任务页 */
     private LinearLayout mTaskCreateLayout;
@@ -166,14 +172,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private EditText mWPLatET;
     private EditText mWPLngET;
 
-
-
     //-----
     private SetPoint mSetPoint = new SetPoint();
     private SetMission mSetMission = SetMission.FREE_MODE;
     private VerticalMode mVerticalMode = new VerticalMode(this);
     private SurroundMode mSurroundMode = new SurroundMode(this);
     private WaypointMode mWaypointMode = new WaypointMode(this);
+
+    private Handler mHandler;// 给地图Fragment传递实时数据的Handler
 
 
     @Override
@@ -198,6 +204,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         filter.addAction(UAVOSApplication.FLAG_CONNECTION_CHANGE);
         registerReceiver(mReceiver, filter);
 
+        uavosDB = UAVOSDB.getInstance(this);
         initUI();
         addListener();
     }
@@ -272,6 +279,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         mScanBtn.setOnClickListener(this);
         mFreeBtn = (Button) findViewById(R.id.btn_mode_free);
         mFreeBtn.setOnClickListener(this);
+
+        mVHBackBtn = (Button) findViewById(R.id.btn_vh_back);
+        mVHBackBtn.setOnClickListener(this);
 
         // 获取无人机位置
         mVHGetPlaneBtn = (Button) findViewById(R.id.btn_vh_get_plane);
@@ -383,12 +393,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
 //        mSetMission = new SetMission();
 
-        mDisplayDataTV = (TextView) findViewById(R.id.tv_display_data);
-
         fm = getFragmentManager();
         showFragment(POSITION_AMAP_FRAGMENT);
         resetRightUI();
         mTaskCreateLayout.setVisibility(View.VISIBLE);
+
+        Compass = (DashboardWidget) findViewById(R.id.Compass);
     }
 
     protected BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -398,29 +408,30 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         }
     };
 
-    private void onProductConnectionChange()
-    {
+    private void onProductConnectionChange() {
         initFlightController();
         initDataTransmission();
     }
 
     public void initFlightController() {
         BaseProduct product = UAVOSApplication.getProductInstance();
-        if(product != null && product.isConnected()) {
-            if(product instanceof Aircraft) {
+        if (product != null && product.isConnected()) {
+            if (product instanceof Aircraft) {
                 mFlightController = ((Aircraft) product).getFlightController();
             }
         }
 
-        if(mFlightController != null) {
+        if (mFlightController != null) {
             mFlightController.setStateCallback(new FlightControllerState.Callback() {
                 @Override
                 public void onUpdate(@NonNull FlightControllerState djiFlightControllerCurrentState) {
                     droneLocationLat = djiFlightControllerCurrentState.getAircraftLocation().getLatitude();
                     droneLocationLng = djiFlightControllerCurrentState.getAircraftLocation().getLongitude();
+                    //TODO===坐标转换
+
                     mSurroundMode.droneLocationLat = droneLocationLat;
                     mSurroundMode.droneLocationLng = droneLocationLng;
-                    //TODO=== 坐标转换
+
                     /*GCJ02_pos = GCJ2WGS.getGCJ02Location(new LatLng(droneLocationLatW,droneLocationLngW));
                     droneLocationLat = GCJ02_pos.latitude;
                     droneLocationLng = GCJ02_pos.longitude;*/
@@ -429,7 +440,22 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 }
             });
 
+            /*mFlightController.setOnboardSDKDeviceDataCallback(new FlightController.OnboardSDKDeviceDataCallback() {
+                @Override
+                public void onReceive(byte[] bytes) {
+                    Mission mission = AnalyzeUtil.analyzeMission(new String(bytes));
+                    if(mission != null) {
+                        String realData = mission.getData();
+                        if(!TextUtils.isEmpty(realData)) {
+                            mDisplayDataTV.setText(realData);//实时数据显示
+                        }
+                        uavosDB.saveMission(mission);
+                    }
 
+                    //TODO===什么时候开始保存数据
+
+                }
+            });*/
         }
     }
 
@@ -483,14 +509,17 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.ll_amap:
+                Compass.setVisibility(View.VISIBLE);
                 showFragment(POSITION_AMAP_FRAGMENT);
                 position = POSITION_AMAP_FRAGMENT;
                 break;
             case R.id.ll_video:
+                Compass.setVisibility(View.VISIBLE);
                 showFragment(POSITION_VIDEO_FRAGMENT);
                 position = POSITION_VIDEO_FRAGMENT;
                 break;
             case R.id.ll_data:
+                Compass.setVisibility(View.INVISIBLE);
                 showFragment(POSITION_DATA_FRAGMENT);
                 position = POSITION_DATA_FRAGMENT;
                 break;
@@ -498,13 +527,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             //新建任务按钮
             case R.id.btn_create_task:
                 String newTaskName = mNewTaskNameET.getText().toString();
-                if(!"".equals(newTaskName)) {
-                    resetRightUI();
-                    mTaskModeLayout.setVisibility(View.VISIBLE);
-                } else {
+                if ("".equals(newTaskName)) {
                     ToastUtils.setResultToToast(HomeActivity.this, "任务名称不可为空");
                     return;
                 }
+                createNewTask(newTaskName);
                 break;
 
             //从飞行模式选择界面返回创建任务界面按钮
@@ -593,13 +620,13 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 //TODO===  保存飞行参数信息;生成航线并在地图展示
                 switch (mSetMission) {
                     case VERTICAL_HOVER_MODE:
-                        if(mVHStartHeightET.getText().toString()!= null)
-                         mVerticalMode.setHoverHigh(Float.parseFloat(mVHStartHeightET.getText().toString()));
+                        if (mVHStartHeightET.getText().toString() != null)
+                            mVerticalMode.setHoverHigh(Float.parseFloat(mVHStartHeightET.getText().toString()));
                         mVerticalMode.setHoverInterval(Float.parseFloat(mVHHighInterval.getText().toString()));
                         mVerticalMode.setHoverNumbers(Float.parseFloat(mVHMonitorPoints.getText().toString()));
                         mVerticalMode.setHoverTime(Float.parseFloat(mVHSingleMonitorTime.getText().toString()));
 
-                        mVerticalMode.setHoverMode(mSetPoint.BasicLat,mSetPoint.BasicLng);
+                        mVerticalMode.setHoverMode(mSetPoint.BasicLat, mSetPoint.BasicLng);
                         Log.e(TAG, "生成航线");
                         loadWayPointMission(mVerticalMode.waypointMissionBuilder);
                         uploadWayPointMission();
@@ -609,7 +636,16 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btn_vh_take_off:
                 startWaypointMission();
+                isStartSaveData = true;
+                //TODO===模拟保存数据
+                String dataString = "UAVDTA:0.352|170815|133000|0.11111|0.11111|10.0|0.1|0.1|0.1";
+                for (int i = 0; i <= 10; i++) {
+                    Mission mission = AnalyzeUtil.analyzeMission(dataString);
+                    uavosDB.saveMission(currentTaskId, mission);
+                }
+
                 break;
+
             //垂直分布模式移动----------------------------------------------------------------------
             case R.id.btn_vm_set_point:
                 //TODO===  把基点保存  并在地图做标注
@@ -739,10 +775,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             //--------------------------------------------------------------------------------------
             case R.id.btn_vh_get_plane://地图功能示例：获取无人机位置
-                if(amapFragment == null) {
-                    AmapFragment amapFragment = (AmapFragment) getFragmentManager().findFragmentById(R.id.layout_mode_vertical_hover);
+                if (amapFragment == null) {
+                    amapFragment = (AmapFragment) getFragmentManager().findFragmentById(R.id.layout_mode_vertical_hover);
                 }
                 //TODO=== 通过amapFragment可调用其中定义的方法
+                amapFragment.updateDroneLocation(droneLocationLat, droneLocationLng);
+                amapFragment.cameraUpdate(droneLocationLat, droneLocationLng);
                 //amapFragment.
                 mVHLatET.setText(droneLocationLat + "");
                 mVHLngET.setText(droneLocationLng + "");
@@ -786,6 +824,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+
     /**
      * 隐藏所有设置信息界面
      */
@@ -814,7 +853,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     //----------------------------------------------------------------------------------------------
-    private void setResultToToast(final String string){
+    private void setResultToToast(final String string) {
         HomeActivity.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -823,7 +862,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
-    public void loadWayPointMission(WaypointMission.Builder builder){
+    public void loadWayPointMission(WaypointMission.Builder builder) {
         DJIError error = getWaypointMissionOperator().loadMission(builder.build());
         if (error == null) {
             setResultToToast("loadWaypoint succeeded");
@@ -833,15 +872,15 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     }
     //----------------------------------------------------------------------------------------------
 
-    public void uploadWayPointMission(){
+    public void uploadWayPointMission() {
 
         getWaypointMissionOperator().uploadMission(new CommonCallbacks.CompletionCallback() {
             @Override
             public void onResult(DJIError error) {
                 if (error == null) {
-                    ToastUtils.setResultToToast(HomeActivity.this,"Mission upload successfully!");
+                    ToastUtils.setResultToToast(HomeActivity.this, "Mission upload successfully!");
                 } else {
-                    ToastUtils.setResultToToast(HomeActivity.this,"Mission upload failed, error: " + error.getDescription() + " retrying...");
+                    ToastUtils.setResultToToast(HomeActivity.this, "Mission upload failed, error: " + error.getDescription() + " retrying...");
                     getWaypointMissionOperator().retryUploadMission(null);
                 }
             }
@@ -849,23 +888,23 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    public void startWaypointMission(){
+    public void startWaypointMission() {
 
         getWaypointMissionOperator().startMission(new CommonCallbacks.CompletionCallback() {
             @Override
             public void onResult(DJIError error) {
-                ToastUtils.setResultToToast(HomeActivity.this,"Mission Start: " + (error == null ? "Successfully" : error.getDescription()));
+                ToastUtils.setResultToToast(HomeActivity.this, "Mission Start: " + (error == null ? "Successfully" : error.getDescription()));
             }
         });
 
     }
 
-    public void stopWaypointMission(){
+    public void stopWaypointMission() {
 
         getWaypointMissionOperator().stopMission(new CommonCallbacks.CompletionCallback() {
             @Override
             public void onResult(DJIError error) {
-                ToastUtils.setResultToToast(HomeActivity.this,"Mission Stop: " + (error == null ? "Successfully" : error.getDescription()));
+                ToastUtils.setResultToToast(HomeActivity.this, "Mission Stop: " + (error == null ? "Successfully" : error.getDescription()));
             }
         });
 
@@ -890,6 +929,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     public Double getDroneLocationLng() {
         return droneLocationLng;
     }
+
     /**
      * 显示Fragment
      */
@@ -965,9 +1005,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    public void setHandler(Handler handler){
+        this.mHandler = handler;
+    }
     //----------------------------------------------------------------------------------------------
     //--
-    private void initDataTransmission(){
+    private void initDataTransmission() {
         BaseProduct product = UAVOSApplication.getProductInstance();
         if (product != null && product.isConnected()) {
             if (product instanceof Aircraft) {
@@ -982,18 +1025,73 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 @Override
                 public void onReceive(byte[] bytes) {
                     String str = new String(bytes);
+                    //UAVDTA:0.352|170815|133000|0.11111|0.11111|10.0|0.1|0.1|0.1
                     //--数据处理回调接口，bytes中是传回来的数据
                     //--这里做好数据解析，存储及显示
-                    String aa[] = str.split("\\|");
-                    if(amapFragment == null) {
+                    /*if (amapFragment == null) {
                         AmapFragment amapFragment = (AmapFragment) getFragmentManager().findFragmentById(R.id.layout_mode_vertical_hover);
                     }
-                    TextView mDisplayDataTV = (TextView)amapFragment.getView().findViewById(R.id.tv_display_data);
-                    //TODO=== 添加要显示的实时数据
-                    mDisplayDataTV.setText(aa[0].substring(7));
+                    String aa[] = str.split("\\|");
+                    TextView mDisplayDataTV = (TextView) amapFragment.getView().findViewById(R.id.tv_display_data);
+                    mDisplayDataTV.setText(aa[0].substring(7));*/
+                    Mission mission = AnalyzeUtil.analyzeMission(str);
+                    if(isStartSaveData) {
+                        uavosDB.saveMission(currentTaskId, mission);
+                    }
+                    Message message = new Message();
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("mission", mission);
+                    message.setData(bundle);
+                    mHandler.sendMessage(message);
                 }
             });
         }
     }
     //----------------------------------------------------------------------------------------------
+
+    private void createNewTask(String newTaskName) {
+        if (isCreatedTask(newTaskName)) {
+            ToastUtils.setResultToToast(HomeActivity.this, "不可创建相同名称的任务");
+        } else {
+            resetRightUI();
+            mTaskModeLayout.setVisibility(View.VISIBLE);
+            // 创建新任务
+            Task task = new Task();
+//            String taskId = UUID.randomUUID().toString();
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat df2 = new SimpleDateFormat("yyyyMMddHHmmss");
+            String startTime = df.format(new Date());
+            String taskId = "tab" + df2.format(new Date());
+            task.setTaskId(taskId);
+            task.setTaskName(newTaskName);
+            //TODO====任务模式需要先获取
+            task.setTaskMode("VH");
+            task.setStartTime(startTime);
+            task.setProbeType("RF06");
+            uavosDB.saveTask(task);//保存新建任务到任务表中
+            // 创建该任务对应的数据表
+            currentTaskId = taskId;
+            uavosDB.createTaskDataTab(taskId);
+//            uavosDB.saveMission(taskId, );//什么时候开始保存当前任务数据
+        }
+    }
+
+    /**
+     * 判断是否已经创建过改名的任务
+     * @param taskName
+     * @return
+     */
+    private boolean isCreatedTask(String taskName) {
+        boolean isCreated = false;
+        List<Task> taskList = uavosDB.loadAllTask();
+        if (taskList.size() > 0) {
+            for (Task task : taskList) {
+                if (taskName.equals(task.getTaskName())) {
+                    isCreated = true;
+                }
+            }
+        }
+        return isCreated;
+    }
+
 }
