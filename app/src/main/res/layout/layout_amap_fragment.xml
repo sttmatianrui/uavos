@@ -74,4 +74,11 @@
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/text_size_10" />
 
+    <TextView
+        android:layout_alignParentRight="true"
+        android:id="@+id/tv_log"
+        android:layout_marginTop="20dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp" />
+
 </RelativeLayout>

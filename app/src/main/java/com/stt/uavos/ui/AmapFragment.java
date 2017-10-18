@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ import com.amap.api.maps2d.model.MarkerOptions;
 import com.amap.api.maps2d.model.Polyline;
 import com.amap.api.maps2d.model.PolylineOptions;
 import com.stt.uavos.R;
+import com.stt.uavos.coordinate.ChineseCoordinate;
 import com.stt.uavos.legend.BandRangeSetting;
 import com.stt.uavos.legend.BandSetting;
 import com.stt.uavos.legend.LegendManager;
@@ -69,11 +71,13 @@ public class AmapFragment extends Fragment implements View.OnClickListener, AMap
     private List<Mission> missions;
     private BandSetting bandSetting;
     public HomeActivity homeActivity;
+    private int num = 1;
 
     private Handler mHanlder = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
+            Log.e("AmapFragment", "==================" + num);
             Bundle b = msg.getData();
             Mission mission = (Mission) b.get("mission");
             double lat = Double.valueOf(mission.getLat());
@@ -85,6 +89,7 @@ public class AmapFragment extends Fragment implements View.OnClickListener, AMap
             reDrawpoint(point, color);
             mPolyoptions.add(point);
             reDrawline();
+            num += 1;
         }
     };
 
@@ -254,6 +259,7 @@ public class AmapFragment extends Fragment implements View.OnClickListener, AMap
      * 实时轨迹绘制
      */
     private void reDrawline() {
+        Log.e("AmapFragment", "==========reDrawline========" + num);
         if(mPolyoptions.getPoints().size() > 1) {
             if (mPolyline != null) {
                 mPolyline.setPoints(mPolyoptions.getPoints());
@@ -267,6 +273,7 @@ public class AmapFragment extends Fragment implements View.OnClickListener, AMap
      * 绘制地图点
      */
     private void reDrawpoint (LatLng point, String colorValue){
+        Log.e("AmapFragment", "==========reDrawpoint========" + num);
         BitmapDescriptor bd = getBitmapDes(30, colorValue);
         final Marker marker = aMap.addMarker(new MarkerOptions().anchor(0.5f,0.5f).position(point).icon(bd));
 //        final Marker marker = aMap.addMarker(new MarkerOptions().anchor(0.5f,0.5f).position(point).icon(bd).snippet("DefaultMarker"));

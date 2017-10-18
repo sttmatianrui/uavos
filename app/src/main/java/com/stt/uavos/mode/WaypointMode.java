@@ -8,7 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dji.common.mission.waypoint.Waypoint;
+import dji.common.mission.waypoint.WaypointAction;
+import dji.common.mission.waypoint.WaypointActionType;
 import dji.common.mission.waypoint.WaypointMission;
+import dji.common.mission.waypoint.WaypointMissionFinishedAction;
+import dji.common.mission.waypoint.WaypointMissionFlightPathMode;
+import dji.common.mission.waypoint.WaypointMissionHeadingMode;
+
 
 /**
  * Created by 111112 on 2017/8/3.
@@ -21,7 +27,7 @@ public class WaypointMode {
     private Context context;
 
     public  WaypointMode(Context context) {
-        this.context = context;
+        this.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               context = context;
     }
 
     public List<Waypoint> waypointList = new ArrayList<>();
@@ -58,6 +64,7 @@ public class WaypointMode {
             ToastUtils.setResultToToast(context,waypointMissionBuilder.getWaypointList().size()+"");
             for (int i=0; i< waypointMissionBuilder.getWaypointList().size(); i++){
                 waypointMissionBuilder.getWaypointList().get(i).altitude = High;
+                //waypointMissionBuilder.getWaypointList().get(i).addAction(new WaypointAction(WaypointActionType.STAY, (int) Time * 1000));
             }
 
             //ToastUtils.setResultToToast("Set Waypoint attitude successfully");

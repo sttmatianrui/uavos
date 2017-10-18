@@ -499,6 +499,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     };
 
     public WaypointMissionOperator getWaypointMissionOperator() {
+
         if (instance == null) {
             instance = DJISDKManager.getInstance().getMissionControl().getWaypointMissionOperator();
         }
@@ -1028,12 +1029,13 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                     //UAVDTA:0.352|170815|133000|0.11111|0.11111|10.0|0.1|0.1|0.1
                     //--数据处理回调接口，bytes中是传回来的数据
                     //--这里做好数据解析，存储及显示
-                    /*if (amapFragment == null) {
-                        AmapFragment amapFragment = (AmapFragment) getFragmentManager().findFragmentById(R.id.layout_mode_vertical_hover);
+                    if (amapFragment == null) {
+                        amapFragment = (AmapFragment) getFragmentManager().findFragmentById(R.id.layout_mode_vertical_hover);
                     }
                     String aa[] = str.split("\\|");
-                    TextView mDisplayDataTV = (TextView) amapFragment.getView().findViewById(R.id.tv_display_data);
-                    mDisplayDataTV.setText(aa[0].substring(7));*/
+//                    TextView mDisplayDataTV = (TextView) amapFragment.getView().findViewById(R.id.tv_display_data);
+                    TextView mLogTV = (TextView) amapFragment.getView().findViewById(R.id.tv_log);
+                    mLogTV.setText(aa[2]);
                     Mission mission = AnalyzeUtil.analyzeMission(str);
                     if(isStartSaveData) {
                         uavosDB.saveMission(currentTaskId, mission);

@@ -1,7 +1,9 @@
 package com.stt.uavos.utils;
 
 import android.text.TextUtils;
+import android.util.Log;
 
+import com.stt.uavos.coordinate.ChineseCoordinate;
 import com.stt.uavos.model.Mission;
 
 /**
@@ -14,9 +16,11 @@ import com.stt.uavos.model.Mission;
 public class AnalyzeUtil {
 
     public static Mission analyzeMission(String datas) {
+        Log.e("AnalyzeUtil", "AnalyzeUtil11111111111111");
         Mission mission = new Mission();
-        if(!TextUtils.isEmpty(datas)) {
+        if (!TextUtils.isEmpty(datas)) {
             String[] array = datas.split("\\|");
+            Log.e("AnalyzeUtil", "AnalyzeUtil22222222222222222");
             //TODO===解析数据由Mission实体来接收
             /**
              * 飞机传到平板O2M
@@ -26,8 +30,12 @@ public class AnalyzeUtil {
             mission.setData(array[0].substring(7));
             mission.setDate(array[1]);
             mission.setTime(array[2]);
-            mission.setLat(array[3]);
-            mission.setLng(array[4]);
+//            mission.setLat(array[3]);
+//            mission.setLat(array[4]);
+            String lat = ChineseCoordinate.hdhd(Double.valueOf(array[3])) + "";
+            String lng = ChineseCoordinate.hdhd(Double.valueOf(array[4])) + "";
+            mission.setLat(lat);
+            mission.setLng(lng);
             mission.setHeight(array[5]);
             mission.setXspeed(array[6]);
             mission.setYspeed(array[7]);

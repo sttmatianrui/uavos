@@ -15,6 +15,22 @@ import java.util.HashMap;
 
 public class ChineseCoordinate {
 
+    public static double hdhd(double x)    //弧度化度
+    {
+        double xx,x1,y;
+        double z,pi;
+        double out;
+        pi=3.1415926535897932;
+        xx=x;
+        xx=xx*180.0/pi;
+        x1=(xx);
+        y= ((xx-x1)*60.0);
+        z=(xx-x1-y/60.0)*3600.0;
+        xx=x1+y/100.0+z/10000.0;
+        out=xx;
+        return out;
+    }
+
     public static LatLng getGCJ02Location(LatLng pos){
         //--GPS转换为高德坐标系
         CoordinateConverter converter  = new CoordinateConverter();
