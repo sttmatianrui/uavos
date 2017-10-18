@@ -63,6 +63,7 @@ public class WaypointMode {
             ToastUtils.setResultToToast(context,waypointMissionBuilder.getWaypointList().size()+"");
             for (int i=0; i< waypointMissionBuilder.getWaypointList().size(); i++){
                 waypointMissionBuilder.getWaypointList().get(i).altitude = High;
+                waypointMissionBuilder.getWaypointList().get(i).addAction(new WaypointAction(WaypointActionType.STAY, (int) Time * 1000));
             }
 
             //ToastUtils.setResultToToast("Set Waypoint attitude successfully");
