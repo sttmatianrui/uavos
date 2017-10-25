@@ -52,6 +52,7 @@
         android:textSize="@dimen/text_size_10" />
 
     <Button
+        android:visibility="gone"
         android:id="@+id/btn_sudden_stop"
         android:layout_width="100dp"
         android:layout_height="@dimen/activity_margin_30"

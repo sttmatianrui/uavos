@@ -41,6 +41,7 @@ public class SurroundMode {
     private static final double PI = 3.1415926535897932384626;
     private static final double C_EARTH = 6378137.0;
     public double droneLocationLat = 181, droneLocationLng = 181;
+    public double homeLatitude = 181, homeLongitude = 181;
 
     public float HoverHigh;
     public float HoverNumbers;
@@ -94,12 +95,12 @@ public class SurroundMode {
 
         LatLng pos = new LatLng(droneLocationLat, droneLocationLng);
 
-        optAngle = Math.atan2((pos.longitude - lat),(pos.latitude - lng));
+        optAngle = Math.atan2((pos.longitude - lng),(pos.latitude - lat));
 
         for(int i=0; i <HoverNumbers; i++){
 
-            lati = lat + Math.toDegrees(HoverRadius * Math.cos(i * 2 *PI / HoverNumbers + optAngle)/C_EARTH);
-            longi = lng + Math.toDegrees(HoverRadius * Math.sin(i * 2 *PI / HoverNumbers + optAngle)/C_EARTH);
+            lati = lat + Math.toDegrees(HoverRadius * Math.cos(i * 2 *Math.PI / HoverNumbers + optAngle)/C_EARTH);
+            longi = lng + Math.toDegrees(HoverRadius * Math.sin(i * 2 *Math.PI / HoverNumbers + optAngle)/C_EARTH);
 
             final Waypoint eachWaypoint = new Waypoint(lati,longi,
                     HoverHigh);
@@ -141,6 +142,8 @@ public class SurroundMode {
         hotpointMission.setHotpoint(new LocationCoordinate2D(lat,lng));
         hotpointMission.setAltitude(MoveHigh);
         hotpointMission.setRadius(MoveRadius);
+        //-----
+        MoveSpeed =(float)(180 / (3.14 * MoveRadius));
         hotpointMission.setAngularVelocity(MoveSpeed);
         HotpointStartPoint startPoint = HotpointStartPoint.NEAREST;
         hotpointMission.setStartPoint(startPoint);

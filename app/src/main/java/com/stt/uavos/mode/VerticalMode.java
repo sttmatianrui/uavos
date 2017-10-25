@@ -51,7 +51,7 @@ public class VerticalMode {
 
     public float MoveHigh;
     public float MoveInterval;
-    public float MoveSpeed;
+    public float MoveSpeed ;
     private Context context;
 
     public  VerticalMode(Context context) {
@@ -130,9 +130,12 @@ public class VerticalMode {
         ToastUtils.setResultToToast(context,"Step 3: Go to target point");
         elements.add(new GoToAction(new LocationCoordinate2D(lat, lng), MoveHigh));
 
-        ToastUtils.setResultToToast(context,"Step 4: Go 10 meters from target point with slow speed");
+        ToastUtils.setResultToToast(context,"Step 4: Go 10 meters from target point with 2m/s speed");
 
-        elements.add(new GoToAction(new LocationCoordinate2D(lat, lng), MoveHigh + MoveInterval));
+        GoToAction goToAction = new GoToAction(new LocationCoordinate2D(lat, lng), MoveHigh + MoveInterval);
+        goToAction.setFlightSpeed(2);
+        //ToastUtils.setResultToToast(context,MoveSpeed+"");
+        elements.add(goToAction);
 
         //Step 4: go back home
         ToastUtils.setResultToToast(context,"Step 3: go back home");

@@ -23,6 +23,11 @@ public class SetPoint {
         BasicLng = lng;
     }
 
+    public void setBasicPoint(LatLng pos){
+        BasicLat = pos.latitude;
+        BasicLng = pos.longitude;
+    }
+
 
     protected void addPoint(Waypoint mywaypoint){
         waypointList.add(mywaypoint);

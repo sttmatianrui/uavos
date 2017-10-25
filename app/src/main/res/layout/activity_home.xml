@@ -130,6 +130,8 @@
 
         <include layout="@layout/layout_mode_waypoint" />
 
+        <include layout="@layout/layout_mode_space" />
+
     </RelativeLayout>
 
     <LinearLayout

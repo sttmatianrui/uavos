@@ -2,6 +2,7 @@ package com.stt.uavos.mode;
 
 import android.content.Context;
 
+import com.amap.api.maps2d.model.LatLng;
 import com.stt.uavos.utils.ToastUtils;
 
 import java.util.ArrayList;
@@ -41,6 +42,13 @@ public class WaypointMode {
 
     public void  addPoint(double lat,double lng){
         Waypoint mWaypoint = new Waypoint(lat, lng, 10);
+        waypointList.add(mWaypoint);
+        waypointMissionBuilder.waypointList(waypointList).waypointCount(waypointList.size());
+        ToastUtils.setResultToToast(context,"航点" + waypointList.size());
+    }
+
+    public void  addPoint(LatLng pos){
+        Waypoint mWaypoint = new Waypoint(pos.latitude, pos.longitude, 10);
         waypointList.add(mWaypoint);
         waypointMissionBuilder.waypointList(waypointList).waypointCount(waypointList.size());
         ToastUtils.setResultToToast(context,"航点" + waypointList.size());
