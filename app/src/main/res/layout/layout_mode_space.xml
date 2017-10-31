@@ -21,8 +21,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/btn_sp_back"
-        android:layout_marginTop="@dimen/activity_margin_15"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -41,7 +42,7 @@
                 android:textSize="@dimen/text_size_10" />
 
             <EditText
-                android:id="@+id/et_vp_lat"
+                android:id="@+id/et_sp_lat"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/activity_margin_30"
                 android:layout_marginRight="@dimen/activity_margin_6"
@@ -54,7 +55,7 @@
                 android:textSize="@dimen/text_size_10" />
 
             <Button
-                android:id="@+id/btn_vp_set_point"
+                android:id="@+id/btn_sp_set_point"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/activity_margin_30"
                 android:layout_weight="2"
@@ -83,7 +84,7 @@
                 android:textSize="@dimen/text_size_10" />
 
             <EditText
-                android:id="@+id/et_vp_lng"
+                android:id="@+id/et_sp_lng"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/activity_margin_30"
                 android:layout_marginRight="@dimen/activity_margin_6"
@@ -96,7 +97,7 @@
                 android:textSize="@dimen/text_size_10" />
 
             <Button
-                android:id="@+id/btn_vp_cancel"
+                android:id="@+id/btn_sp_cancel"
                 android:layout_width="0dp"
                 android:layout_height="31dp"
                 android:layout_weight="1.93"
@@ -118,7 +119,7 @@
                 android:layout_weight="1" />
 
             <Button
-                android:id="@+id/btn_vp_get_plane"
+                android:id="@+id/btn_sp_get_plane"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/activity_margin_30"
                 android:layout_weight="4"
@@ -144,7 +145,63 @@
                 android:textSize="@dimen/text_size_10" />
 
             <EditText
-                android:id="@+id/et_vp_start_height"
+                android:id="@+id/et_sp_start_height"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/activity_margin_30"
+                android:layout_weight="2"
+                android:background="@drawable/selector_edittext_bg"
+                android:lines="1"
+                android:paddingLeft="@dimen/activity_margin_6"
+                android:paddingRight="@dimen/activity_margin_6"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_10" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_margin_10">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/activity_margin_6"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/uav_parameter_monitor_points"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_10" />
+
+            <EditText
+                android:id="@+id/et_sp_monitor_points"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/activity_margin_30"
+                android:layout_weight="2"
+                android:background="@drawable/selector_edittext_bg"
+                android:lines="1"
+                android:paddingLeft="@dimen/activity_margin_6"
+                android:paddingRight="@dimen/activity_margin_6"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_10" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_margin_10">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/activity_margin_6"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/uav_parameter_height_interval"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/text_size_10" />
+
+            <EditText
+                android:id="@+id/et_sp_height_interval"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/activity_margin_30"
                 android:layout_weight="2"
@@ -172,7 +229,7 @@
                 android:textSize="@dimen/text_size_10" />
 
             <EditText
-                android:id="@+id/et_vp_time"
+                android:id="@+id/et_sp_single_monitor_time"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/activity_margin_30"
                 android:layout_weight="2"
@@ -221,7 +278,7 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/btn_vp_generate_route"
+                android:id="@+id/btn_sp_generate_route"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/activity_margin_30"
                 android:layout_marginRight="@dimen/activity_margin_6"
@@ -231,8 +288,8 @@
                 android:textSize="@dimen/text_size_10" />
 
             <Button
-                android:id="@+id/btn_vp_take_off"
-                android:layout_width="0dp"
+                android:id="@+id/btn_sp_take_off"
+                android:layout_width="wrap_content"
                 android:layout_height="@dimen/activity_margin_30"
                 android:layout_weight="1"
                 android:background="@drawable/selector_btn_bg"

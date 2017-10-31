@@ -190,6 +190,7 @@
             android:layout_marginTop="@dimen/activity_margin_10">
 
             <TextView
+                android:visibility="gone"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/activity_margin_6"
@@ -200,6 +201,7 @@
                 android:textSize="@dimen/text_size_10" />
 
             <EditText
+                android:visibility="gone"
                 android:id="@+id/et_vm_monitor_speed"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/activity_margin_30"

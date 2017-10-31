@@ -2,6 +2,7 @@ package com.stt.uavos.mode;
 
 import android.content.Context;
 
+import com.amap.api.maps2d.model.LatLng;
 import com.stt.uavos.utils.ToastUtils;
 
 import java.util.ArrayList;
@@ -46,6 +47,13 @@ public class WaypointMode {
         waypointMissionBuilder.waypointList(waypointList).waypointCount(waypointList.size());
         ToastUtils.setResultToToast(context,"航点" + waypointList.size());
     }
+
+    public void  addPoint(LatLng pos){
+        Waypoint mWaypoint = new Waypoint(pos.latitude, pos.longitude, 10);
+        waypointList.add(mWaypoint);
+        waypointMissionBuilder.waypointList(waypointList).waypointCount(waypointList.size());
+        ToastUtils.setResultToToast(context,"航点" + waypointList.size());
+    }
     public void delatePoint(double lat,double lng){
         Waypoint mWaypoint = new Waypoint(lat, lng, High);
         waypointList.remove(mWaypoint);
@@ -64,7 +72,9 @@ public class WaypointMode {
             ToastUtils.setResultToToast(context,waypointMissionBuilder.getWaypointList().size()+"");
             for (int i=0; i< waypointMissionBuilder.getWaypointList().size(); i++){
                 waypointMissionBuilder.getWaypointList().get(i).altitude = High;
-                //waypointMissionBuilder.getWaypointList().get(i).addAction(new WaypointAction(WaypointActionType.STAY, (int) Time * 1000));
+
+                waypointMissionBuilder.getWaypointList().get(i).addAction(new WaypointAction(WaypointActionType.STAY, (int) Time * 1000));
+
             }
 
             //ToastUtils.setResultToToast("Set Waypoint attitude successfully");
